@@ -79,7 +79,7 @@ srctar:
 
 rpm: srctar
 	$(CONTAINER) run --rm --security-opt label=disable -v $(CURDIR):/src -e QT_QPA_PLATFORM=offscreen registry.fedoraproject.org/fedora:44 sh -c \
-		'dnf -y -q install rpm-build make qt6-qtshadertools && rpmbuild -bb --define "_sourcedir /src/dist" --define "_rpmdir /src/dist/rpm" /src/packaging/plasma-wallpaper-scapelet.spec $(CHOWN)'
+		'dnf -y -q --setopt=install_weak_deps=False install rpm-build make qt6-qtshadertools && rpmbuild -bb --define "_sourcedir /src/dist" --define "_rpmdir /src/dist/rpm" /src/packaging/plasma-wallpaper-scapelet.spec $(CHOWN)'
 
 clean:
 	rm -f $(QSBS)
