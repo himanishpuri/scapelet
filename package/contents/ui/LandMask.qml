@@ -1,5 +1,7 @@
 // SPDX-FileCopyrightText: 2026 himanishpuri <himanishpuri2203@gmail.com>
 // SPDX-License-Identifier: GPL-3.0-or-later
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import "../code/islands.js" as Islands
 
