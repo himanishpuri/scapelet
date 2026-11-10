@@ -18,6 +18,12 @@ Put an icon on your desktop and, a moment later, land rises around it. Put a
 few icons together and their land merges into one. Drag an icon somewhere else
 and the landscape follows; delete it and the land quietly disappears.
 
+<p align="center">
+  <img src="docs/demo.webp" alt="Scapelet on a real desktop with the Beach theme's night palette: a new folder appears in the top-left corner and an island rises around it, the folder is deleted and the island sinks, then three gulls fly past" width="720">
+  <br>
+  <sub>On a real desktop (Beach theme, night palette): a new folder gets an island, the island sinks when the folder is deleted, gulls fly past.</sub>
+</p>
+
 Scapelet is the engine that watches your desktop. Themes decide what the world
 looks like:
 
