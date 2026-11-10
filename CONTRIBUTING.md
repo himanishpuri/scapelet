@@ -10,8 +10,7 @@
 - KDE Plasma 6.3 or later
 - `qt6-qtdeclarative-devel` (`qml-qt6`, `qmllint-qt6`, `qmltestrunner-qt6`)
 - `qt6-qtshadertools` (`qsb-qt6`)
-- `gettext` (`xgettext`, `msgfmt`)
-- `podman`, only for `make rpm`
+- `podman` or `docker`, only for `make rpm`
 
 ## Make targets
 
@@ -26,8 +25,28 @@
 | `make gpu` | GPU render-engine share of plasmashell over 10 s |
 | `make install` / `make reload` | install to `~/.local/share/plasma/wallpapers` and restart plasmashell |
 | `make debug-on` / `make debug-off` | journal logging of icon tracking and power state |
-| `make pot` | regenerate the translation template in `po/` |
-| `make rpm` | build the RPM in a Fedora container |
+| `make rpm` | build the RPM in a Fedora container (see below) |
+
+## Building the RPM
+
+`make rpm` packs `HEAD` with `git archive` and runs `rpmbuild` in a
+`registry.fedoraproject.org/fedora:44` container, so commit your changes
+first. The package lands in `dist/rpm/noarch/`.
+
+With podman (the default):
+
+```sh
+make rpm
+```
+
+With Docker:
+
+```sh
+make rpm CONTAINER=docker
+```
+
+Both produce the same package. Docker runs the build as root, so the
+recipe hands `dist/` back to your user when it is done.
 
 ## Code rules
 
@@ -47,8 +66,3 @@ Conventional prefixes: `feat:`, `fix:`, `perf:`, `refactor:`, `docs:`,
 ## Themes
 
 See [docs/themes.md](docs/themes.md).
-
-## Translations
-
-Copy `po/plasma_wallpaper_io.github.himanishpuri.scapelet.pot` to
-`po/<lang>.po`, translate it, and run `make install`.

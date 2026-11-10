@@ -12,7 +12,6 @@ Source0:        scapelet-%{version}.tar.gz
 BuildArch:      noarch
 
 BuildRequires:  make
-BuildRequires:  gettext
 BuildRequires:  qt6-qtshadertools
 Requires:       plasma-workspace >= 6.3
 Requires:       plasma-desktop >= 6.3
@@ -26,7 +25,7 @@ the Beach theme grows sandy islands that merge, move and sink with the icons.
 %autosetup -n scapelet-%{version}
 
 %build
-%make_build shaders mo
+%make_build shaders
 
 %install
 mkdir -p %{buildroot}%{_datadir}/plasma/wallpapers/%{plugin_id}

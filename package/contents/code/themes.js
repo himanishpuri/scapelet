@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 .pragma library
 
-// Marks a string for xgettext. It is translated with i18n() where it is shown.
+// Marks a user-visible string. It is passed through i18n() where it is shown.
 function N_(s) {
     return s;
 }

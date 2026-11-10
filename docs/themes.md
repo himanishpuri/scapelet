@@ -48,8 +48,8 @@ Setting types:
 | `choice` | `choices`, `def` | index into `choices` |
 
 Values are stored as JSON in the `ThemeSettings` config entry. Invalid or
-missing values fall back to `def`. Wrap every label in `N_()` so `make pot`
-extracts it.
+missing values fall back to `def`. Wrap every label in `N_()`; the settings
+page passes it through `i18n()`.
 
 ## ThemeBase
 

@@ -11,9 +11,8 @@ jobs:
     env:
       QT_QPA_PLATFORM: offscreen
     steps:
-      - run: dnf -y -q install git make gettext qt6-qtdeclarative-devel qt6-qtshadertools
+      - run: dnf -y -q install git make qt6-qtdeclarative-devel qt6-qtshadertools
       - uses: actions/checkout@v5
       - run: make shaders
       - run: make test
       - run: make lint
-      - run: make pot
