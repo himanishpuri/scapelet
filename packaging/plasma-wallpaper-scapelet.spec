@@ -3,7 +3,7 @@
 %global plugin_id io.github.himanishpuri.scapelet
 
 Name:           plasma-wallpaper-scapelet
-Version:        0.3.0
+Version:        0.3.1
 Release:        1%{?dist}
 Summary:        Plasma wallpaper that grows a landscape around your desktop icons
 License:        GPL-3.0-or-later
@@ -37,6 +37,10 @@ cp -a package/. %{buildroot}%{_datadir}/plasma/wallpapers/%{plugin_id}/
 %{_datadir}/plasma/wallpapers/%{plugin_id}/
 
 %changelog
+* Wed Nov 11 2026 himanishpuri <himanishpuri2203@gmail.com> - 0.3.1-1
+- Smooth gull flight with the battery saver on
+- Drop the translation template; RPM builds with podman or docker
+
 * Tue Nov 10 2026 himanishpuri <himanishpuri2203@gmail.com> - 0.3.0-1
 - Project renamed from Archipelago to Scapelet
 
