@@ -11,3 +11,22 @@ var palettes = [
     { deep: "#071a2e", mid: "#0e3350", shallow: "#1d5d78", shoal: "#3f8a9a", foam: "#cfe6f2",
       sandWet: "#5d6470", sandDry: "#7d8490", sandHigh: "#9299a3", accent: "#1d5d78" }    // Night
 ];
+
+// Palm positions: for every cluster of 3 or more, up to floor(size / 2) spots (5 at most),
+// highest seed first, 24 in total.
+function palmSpots(spots, clusters) {
+    var quota = {}, out = [];
+    for (var i = 0; i < clusters.length; ++i) {
+        if (clusters[i].size >= 3) {
+            quota[clusters[i].id] = Math.min(5, Math.floor(clusters[i].size / 2));
+        }
+    }
+    var sorted = spots.slice().sort(function (a, b) { return b.seed - a.seed; });
+    for (var j = 0; j < sorted.length && out.length < 24; ++j) {
+        if (quota[sorted[j].cluster] > 0) {
+            quota[sorted[j].cluster] -= 1;
+            out.push(sorted[j]);
+        }
+    }
+    return out;
+}

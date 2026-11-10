@@ -16,4 +16,16 @@ TestCase {
             }
         }
     }
+
+    function test_palmSpots_small_cluster() {
+        compare(Beach.palmSpots([{ x: 1, y: 1, cluster: "a", seed: 0.9 }], [{ id: "a", size: 2 }]), []);
+    }
+
+    function test_palmSpots_quota() {
+        const spots = [0.1, 0.9, 0.5, 0.7].map((s, i) => ({ x: i, y: 0, cluster: "a", seed: s }));
+        const out = Beach.palmSpots(spots, [{ id: "a", size: 4 }]);
+        compare(out.length, 2);
+        compare(out[0].seed, 0.9);
+        compare(out[1].seed, 0.7);
+    }
 }

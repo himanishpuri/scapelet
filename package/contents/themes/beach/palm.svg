@@ -1,0 +1,14 @@
+<!-- SPDX-FileCopyrightText: 2026 himanishpuri <himanishpuri2203@gmail.com> SPDX-License-Identifier: GPL-3.0-or-later -->
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="-32 -32 64 64">
+  <ellipse cx="3" cy="4" rx="25" ry="24" fill="#000000" fill-opacity="0.16"/>
+  <g fill="#2f9a52" stroke="#1f6e3a" stroke-width="1">
+      <path d="M0 0 C7 -9 9 -21 1 -29 C-8 -21 -6 -9 0 0 Z"/>
+      <path d="M0 0 C7 -9 9 -21 1 -29 C-8 -21 -6 -9 0 0 Z" transform="rotate(51)"/>
+      <path d="M0 0 C7 -9 9 -21 1 -29 C-8 -21 -6 -9 0 0 Z" transform="rotate(103)"/>
+      <path d="M0 0 C7 -9 9 -21 1 -29 C-8 -21 -6 -9 0 0 Z" transform="rotate(154)"/>
+      <path d="M0 0 C7 -9 9 -21 1 -29 C-8 -21 -6 -9 0 0 Z" transform="rotate(206)"/>
+      <path d="M0 0 C7 -9 9 -21 1 -29 C-8 -21 -6 -9 0 0 Z" transform="rotate(257)"/>
+      <path d="M0 0 C7 -9 9 -21 1 -29 C-8 -21 -6 -9 0 0 Z" transform="rotate(309)"/>
+  </g>
+  <circle r="4.5" fill="#6b4a2a"/>
+</svg>

@@ -1,0 +1,7 @@
+<!-- SPDX-FileCopyrightText: 2026 himanishpuri <himanishpuri2203@gmail.com> SPDX-License-Identifier: GPL-3.0-or-later -->
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="32" viewBox="0 0 48 32">
+  <path d="M22 16 C18 9 12 4 3 2 C9 8 12 13 16 16 C12 19 9 24 3 30 C12 28 18 23 22 16 Z" fill="#f7f7f5" stroke="#9aa3ad" stroke-width="0.8"/>
+  <path d="M10 16 C16 12 30 12 40 16 C30 20 16 20 10 16 Z" fill="#ffffff" stroke="#9aa3ad" stroke-width="0.8"/>
+  <path d="M40 16 L46 16" stroke="#e8a23a" stroke-width="2" stroke-linecap="round"/>
+  <path d="M3 2 L7 5 M3 30 L7 27" stroke="#3a3f47" stroke-width="1.6" stroke-linecap="round"/>
+</svg>
