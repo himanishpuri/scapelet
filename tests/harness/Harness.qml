@@ -8,7 +8,7 @@ import "../../package/contents/engine" as Env
 import "../../package/contents/code/themes.js" as Themes
 
 // Standalone renderer harness with draggable fake icons.
-//   qml-qt6 tests/harness/Harness.qml [-- --snapshot /abs/path.png] [--maximized] [--paused]
+//   qml-qt6 tests/harness/Harness.qml [-- --snapshot /abs/path.png | --export /abs/path.png] [--maximized] [--paused]
 //       [--theme <id>] [--settings '<json>'] [--hour <0..24>] [--script events] [--stats]
 // Keys: A add icon, D remove last icon, Space toggle animation, T next theme,
 //       W toggle a fake widget, H cycle the hour (wall clock, 6, 12, 19, 0), P next Beach palette.
@@ -29,6 +29,7 @@ Window {
         return (i >= 0 && i + 1 < args.length) ? args[i + 1] : fallback;
     }
     readonly property string snapshotPath: arg("--snapshot", "")
+    readonly property string exportPath: arg("--export", "")
     readonly property string script: arg("--script", "")
     readonly property bool stats: args.indexOf("--stats") >= 0
     property int nextName: 9
@@ -102,7 +103,7 @@ Window {
             win.visibility = Window.Maximized;
         }
         publish();
-        if (snapshotMode) {
+        if (snapshotMode || exportPath !== "") {
             snapshotTimer.start();
         } else {
             enableAnimation.start();
@@ -166,10 +167,20 @@ Window {
     Timer {
         id: snapshotTimer
         interval: 1500
-        onTriggered: win.contentItem.grabToImage(result => {
-            result.saveToFile(win.snapshotPath);
-            Qt.quit();
-        })
+        onTriggered: {
+            console.info("accent: " + engine.accentColor);
+            if (win.exportPath !== "") {
+                engine.exportImage(win.exportPath, ok => {
+                    console.info("export: " + ok);
+                    Qt.quit();
+                });
+                return;
+            }
+            win.contentItem.grabToImage(result => {
+                result.saveToFile(win.snapshotPath);
+                Qt.quit();
+            });
+        }
     }
 
     Repeater {

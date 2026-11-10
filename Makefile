@@ -7,9 +7,12 @@ PKG     := package
 DEST    := $(HOME)/.local/share/plasma/wallpapers/$(ID)
 SHADERS := $(wildcard $(PKG)/contents/shaders/*.frag $(PKG)/contents/themes/*/*.frag)
 QSBS    := $(SHADERS:.frag=.frag.qsb)
+DOMAIN   := plasma_wallpaper_$(ID)
+I18N_SRC := $(wildcard $(PKG)/contents/ui/*.qml) $(PKG)/contents/code/themes.js
+MOS      := $(patsubst po/%.po,$(PKG)/contents/locale/%/LC_MESSAGES/$(DOMAIN).mo,$(wildcard po/*.po))
 DBUS    := qdbus-qt6 org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript
 
-.PHONY: all shaders install uninstall reload apply restore debug-on debug-off harness snapshot scenario stats gpu test lint dist clean
+.PHONY: all shaders install uninstall reload apply restore debug-on debug-off harness snapshot scenario stats gpu test lint dist clean pot mo
 
 all: shaders
 
@@ -18,7 +21,7 @@ shaders: $(QSBS)
 %.frag.qsb: %.frag
 	$(QSB) --qt6 -o $@ $<
 
-install: shaders
+install: shaders mo
 	@if [ -d "$(DEST)" ]; then \
 		kpackagetool6 --type Plasma/Wallpaper --upgrade $(PKG); \
 	else \
@@ -43,6 +46,18 @@ debug-on:
 debug-off:
 	$(DBUS) 'var ds = desktops(); for (var i = 0; i < ds.length; ++i) { ds[i].currentConfigGroup = ["Wallpaper", "$(ID)", "General"]; ds[i].writeConfig("DebugLog", false); }'
 
+pot:
+	mkdir -p po
+	xgettext --from-code=UTF-8 -L JavaScript -ki18n:1 -ki18nc:1c,2 -ki18np:1,2 -kN_:1 \
+		--package-name=archipelago --package-version=$(VERSION) --msgid-bugs-address=himanishpuri2203@gmail.com \
+		-o po/$(DOMAIN).pot $(I18N_SRC)
+
+mo: $(MOS)
+
+$(PKG)/contents/locale/%/LC_MESSAGES/$(DOMAIN).mo: po/%.po
+	mkdir -p $(dir $@)
+	msgfmt -o $@ $<
+
 harness: shaders
 	qml-qt6 tests/harness/Harness.qml
 
@@ -65,10 +80,11 @@ test:
 lint:
 	-qmllint-qt6 $(PKG)/contents/ui/*.qml $(PKG)/contents/engine/*.qml $(PKG)/contents/themes/*/*.qml tests/harness/*.qml tests/unit/*.qml
 
-dist: shaders
+dist: shaders mo
 	mkdir -p dist
 	tar -czf dist/$(ID)-$(VERSION).tar.gz -C $(PKG) .
 
 clean:
 	rm -f $(QSBS)
 	rm -rf build dist
+	rm -rf $(PKG)/contents/locale

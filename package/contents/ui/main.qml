@@ -1,13 +1,35 @@
 // SPDX-FileCopyrightText: 2026 himanishpuri <himanishpuri2203@gmail.com>
 // SPDX-License-Identifier: GPL-3.0-or-later
+import QtCore
 import QtQuick
 import QtQuick.Window
+import org.kde.plasma.core as PlasmaCore
 import org.kde.plasma.plasmoid
 import "../engine"
 
 WallpaperItem {
     id: root
     accentColor: engine.accentColor
+    contextualActions: [exportAction]
+
+    PlasmaCore.Action {
+        id: exportAction
+        text: i18n("Save Picture Without Icon Names")
+        icon.name: "document-save-as"
+        onTriggered: root.exportPicture()
+    }
+
+    function exportPicture() {
+        const dir = StandardPaths.writableLocation(StandardPaths.PicturesLocation).toString().replace(/^file:\/\//, "");
+        const path = dir + "/archipelago-" + Qt.formatDateTime(new Date(), "yyyyMMdd-HHmmss") + ".png";
+        engine.exportImage(path, ok => {
+            if (ok) {
+                root.openUrlRequested("file://" + path);   // opens the picture in the default viewer
+            } else {
+                console.warn("archipelago: could not save " + path);
+            }
+        });
+    }
 
     IconProbe {
         id: probe

@@ -1,3 +1,4 @@
 *.qsb
 build/
 dist/
+package/contents/locale/

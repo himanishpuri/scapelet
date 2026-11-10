@@ -88,6 +88,20 @@ Item {
         }
     }
 
+    // Saves this item as a PNG with blocks in place of the icons. done(ok) runs when the file is written.
+    // Only the engine's own items are grabbed, so real icons and their names can never be in the picture.
+    function exportImage(path, done) {
+        blocks.visible = true;
+        const started = engine.grabToImage(result => {
+            blocks.visible = false;
+            done(result.saveToFile(path));
+        });
+        if (!started) {
+            blocks.visible = false;
+            done(false);
+        }
+    }
+
     function loadTheme(id) {
         themeLoader.setSource(Qt.resolvedUrl("../themes/" + id + "/Main.qml"), { env: engine, settings: engine.themeSettings });
     }
@@ -159,6 +173,28 @@ Item {
                 if (engine.themeId !== Themes.list[0].id) {
                     engine.loadTheme(Themes.list[0].id);
                 }
+            }
+        }
+    }
+
+    // Stand-ins for the real icons in an exported picture: positions only, no names or artwork.
+    Item {
+        id: blocks
+        anchors.fill: parent
+        visible: false
+        Repeater {
+            model: engine.sources
+            delegate: Rectangle {
+                required property var modelData
+                readonly property bool widget: modelData.kind === "widget"
+                x: widget ? modelData.x : modelData.x + modelData.w / 2 - 24
+                y: widget ? modelData.y : modelData.y + 14
+                width: widget ? modelData.w : 48
+                height: widget ? modelData.h : 48
+                radius: 10
+                color: widget ? "#552f7de1" : "#cc2f7de1"
+                border.color: "white"
+                border.width: 1
             }
         }
     }
