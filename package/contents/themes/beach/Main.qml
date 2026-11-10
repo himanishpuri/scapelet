@@ -190,6 +190,7 @@ ThemeBase {
         Repeater {
             model: [{ dx: 0, dy: 0 }, { dx: -36, dy: 22 }, { dx: -32, dy: -26 }]
             delegate: Image {
+                id: bird
                 required property var modelData
                 required property int index
                 x: modelData.dx
@@ -198,7 +199,7 @@ ThemeBase {
                 height: 24
                 source: Qt.resolvedUrl("bird.svg")
                 sourceSize: Qt.size(48, 32)
-                transform: Scale { origin.y: 12; yScale: 0.75 + 0.25 * Math.sin(theme.env.time * 9 + index * 2) }
+                transform: Scale { origin.y: 12; yScale: 0.75 + 0.25 * Math.sin(theme.env.time * 9 + bird.index * 2) }
             }
         }
     }

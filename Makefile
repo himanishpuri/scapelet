@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: 2026 himanishpuri <himanishpuri2203@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 ID      := io.github.himanishpuri.archipelago
-VERSION := 0.1.0
+VERSION := 0.2.0
 QSB     ?= qsb-qt6
 PKG     := package
 DEST    := $(HOME)/.local/share/plasma/wallpapers/$(ID)

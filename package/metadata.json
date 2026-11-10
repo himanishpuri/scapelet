@@ -4,12 +4,12 @@
         "Authors": [
             { "Name": "himanishpuri", "Email": "himanishpuri2203@gmail.com" }
         ],
-        "Description": "Top-down ocean that grows sandy islands around your desktop icons",
+        "Description": "A living landscape that grows around your desktop icons",
         "Icon": "preferences-desktop-wallpaper",
         "Id": "io.github.himanishpuri.archipelago",
         "License": "GPL-3.0-or-later",
         "Name": "Archipelago",
-        "Version": "0.1.0"
+        "Version": "0.2.0"
     },
     "X-Plasma-API-Minimum-Version": "6.0"
 }
