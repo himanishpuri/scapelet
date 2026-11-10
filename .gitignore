@@ -1,0 +1,3 @@
+*.qsb
+build/
+dist/
