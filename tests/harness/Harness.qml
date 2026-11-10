@@ -15,8 +15,8 @@ import "../../package/contents/code/themes.js" as Themes
 Window {
     id: win
 
-    width: 1280
-    height: 800
+    width: Number(arg("--width", "1280"))
+    height: Number(arg("--height", "800"))
     visible: true
     title: "Archipelago harness"
     color: "black"

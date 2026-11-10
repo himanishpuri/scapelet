@@ -3,15 +3,18 @@
 import QtQuick
 import org.kde.taskmanager as TaskManager
 import org.kde.kwindowsystem
+import "../code/world.js" as World
 
-// covered === true while a non-minimized maximized or full-screen window is on
-// this screen, current virtual desktop and current activity, and the desktop
-// is not revealed with "Show Desktop" (which hides windows without minimizing them).
+// covered === true while a non-minimized maximized or full-screen window (mode 1), or in
+// mode 2 also any window covering at least 80 % of the screen, is on this screen, current
+// virtual desktop and current activity, and the desktop is not revealed with "Show Desktop"
+// (which hides windows without minimizing them).
 Item {
     id: monitor
     visible: false
 
     property rect screenGeometry
+    property int mode: 1   // 1: maximized or full screen, 2: also any window covering 80 % of the screen
     property bool covered: windowCovers && !KWindowSystem.showingDesktop
     property bool windowCovers: false
 
@@ -24,6 +27,9 @@ Item {
             }
             hit = tasks.data(idx, TaskManager.AbstractTasksModel.IsMaximized) === true
                 || tasks.data(idx, TaskManager.AbstractTasksModel.IsFullScreen) === true;
+            if (!hit && monitor.mode === 2) {
+                hit = World.coverage(tasks.data(idx, TaskManager.AbstractTasksModel.Geometry), monitor.screenGeometry) >= 0.8;
+            }
         }
         windowCovers = hit;
     }
@@ -54,5 +60,7 @@ Item {
         function onCountChanged() { recheck.restart() }
     }
 
+    onModeChanged: recheck.restart()
+    onScreenGeometryChanged: recheck.restart()
     Component.onCompleted: recheck.restart()
 }

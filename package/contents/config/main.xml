@@ -62,8 +62,14 @@
       <min>50</min>
       <max>100</max>
     </entry>
-    <entry name="PauseWhenCovered" type="Bool">
-      <label>Pause animation while a maximized or full-screen window covers the desktop</label>
+    <entry name="PauseMode" type="Int">
+      <label>Pause animation: 0 never, 1 under a maximized or full-screen window, 2 also under any window covering 80 % of the screen</label>
+      <default>1</default>
+      <min>0</min>
+      <max>2</max>
+    </entry>
+    <entry name="BatterySaver" type="Bool">
+      <label>Lower frame rate and render scale on battery and in power-saver mode</label>
       <default>true</default>
     </entry>
     <entry name="DebugLog" type="Bool">

@@ -39,12 +39,34 @@ WallpaperItem {
         }
     }
 
+    // True on a desktop containment; false in the lock screen greeter.
+    readonly property bool onDesktop: root.parent !== null && root.parent.appletsLayout !== undefined
+
     // Loaded through a Loader so a missing org.kde.taskmanager module only disables pausing.
     Loader {
         id: pauseLoader
-        active: root.configuration.PauseWhenCovered
+        active: root.configuration.PauseMode > 0 && root.onDesktop
         source: "PauseMonitor.qml"
-        onLoaded: item.screenGeometry = Qt.binding(() => Qt.rect(root.Screen.virtualX, root.Screen.virtualY, root.Screen.width, root.Screen.height))
+        onLoaded: {
+            item.screenGeometry = Qt.binding(() => Qt.rect(root.Screen.virtualX, root.Screen.virtualY, root.Screen.width, root.Screen.height));
+            item.mode = Qt.binding(() => root.configuration.PauseMode);
+        }
+    }
+
+    // Loaded through a Loader so a missing org.kde.plasma.workspace.dbus module only disables these features.
+    Loader {
+        id: powerLoader
+        source: "PowerMonitor.qml"
+        onLoaded: item.debug = Qt.binding(() => root.configuration.DebugLog)
+    }
+
+    readonly property bool locked: root.onDesktop && powerLoader.status === Loader.Ready && powerLoader.item.locked
+    readonly property bool saver: root.configuration.BatterySaver && powerLoader.status === Loader.Ready
+                                  && (powerLoader.item.onBattery || powerLoader.item.profile === "power-saver")
+    onSaverChanged: {
+        if (root.configuration.DebugLog) {
+            console.info("archipelago: saver=" + saver);
+        }
     }
 
     readonly property bool covered: pauseLoader.status === Loader.Ready && pauseLoader.item.covered
@@ -60,9 +82,9 @@ WallpaperItem {
         input: probe.sources.concat(widgetProbe.sources)
         dragging: probe.dragging
         animateChanges: false
-        running: root.configuration.Animate && !root.covered
-        fps: root.configuration.Fps
-        renderScale: root.configuration.RenderScale / 100
+        running: root.configuration.Animate && !root.covered && !root.locked
+        fps: root.saver ? Math.min(15, root.configuration.Fps) : root.configuration.Fps
+        renderScale: (root.saver ? Math.min(75, root.configuration.RenderScale) : root.configuration.RenderScale) / 100
         influenceRadius: root.configuration.InfluenceRadius
         appearDelay: root.configuration.AppearDelay
         disappearDelay: root.configuration.DisappearDelay

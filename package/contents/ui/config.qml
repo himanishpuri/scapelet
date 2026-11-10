@@ -22,7 +22,8 @@ Kirigami.FormLayout {
     property alias cfg_IncludeWidgets: includeWidgets.checked
     property alias cfg_Fps: fps.value
     property alias cfg_RenderScale: renderScale.value
-    property alias cfg_PauseWhenCovered: pauseWhenCovered.checked
+    property alias cfg_PauseMode: pauseMode.currentIndex
+    property alias cfg_BatterySaver: batterySaver.checked
     property alias cfg_DebugLog: debugLog.checked
 
     property string cfg_Theme
@@ -134,9 +135,15 @@ Kirigami.FormLayout {
         stepSize: 25
     }
 
+    QQC2.ComboBox {
+        id: pauseMode
+        Kirigami.FormData.label: i18n("Pause animation:")
+        model: [i18n("Never"), i18n("Under a maximized or full-screen window"), i18n("Under any window that covers most of the screen")]
+    }
+
     QQC2.CheckBox {
-        id: pauseWhenCovered
-        text: i18n("Pause while a window is maximized or full screen")
+        id: batterySaver
+        text: i18n("Save power on battery and in power-saver mode (15 fps, 75 % scale)")
     }
 
     QQC2.CheckBox {
