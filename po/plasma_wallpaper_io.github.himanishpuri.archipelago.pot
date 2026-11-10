@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: archipelago 0.1.0\n"
 "Report-Msgid-Bugs-To: himanishpuri2203@gmail.com\n"
-"POT-Creation-Date: 2026-11-10 19:40+0530\n"
+"POT-Creation-Date: 2026-11-10 19:42+0530\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -106,45 +106,53 @@ msgid "Coastline irregularity (px):"
 msgstr ""
 
 #: package/contents/code/themes.js:19
-msgid "Palm trees, kayak and seabirds"
+msgid "Palm trees"
 msgstr ""
 
 #: package/contents/code/themes.js:20
-msgid "Tint by time of day"
+msgid "Kayak"
 msgstr ""
 
 #: package/contents/code/themes.js:21
-msgid "Permanent beach:"
-msgstr ""
-
-#: package/contents/code/themes.js:21
-msgid "None"
-msgstr ""
-
-#: package/contents/code/themes.js:21
-msgid "Left"
-msgstr ""
-
-#: package/contents/code/themes.js:21
-msgid "Right"
-msgstr ""
-
-#: package/contents/code/themes.js:21
-msgid "Top"
-msgstr ""
-
-#: package/contents/code/themes.js:21
-msgid "Bottom"
+msgid "Seabirds"
 msgstr ""
 
 #: package/contents/code/themes.js:22
+msgid "Tint by time of day"
+msgstr ""
+
+#: package/contents/code/themes.js:23
+msgid "Permanent beach:"
+msgstr ""
+
+#: package/contents/code/themes.js:23
+msgid "None"
+msgstr ""
+
+#: package/contents/code/themes.js:23
+msgid "Left"
+msgstr ""
+
+#: package/contents/code/themes.js:23
+msgid "Right"
+msgstr ""
+
+#: package/contents/code/themes.js:23
+msgid "Top"
+msgstr ""
+
+#: package/contents/code/themes.js:23
+msgid "Bottom"
+msgstr ""
+
+#: package/contents/code/themes.js:24
 msgid "Permanent beach width (px):"
 msgstr ""
 
-#: package/contents/code/themes.js:27
+#: package/contents/code/themes.js:29
 msgid "Blueprint"
 msgstr ""
 
-#: package/contents/code/themes.js:29
+#: package/contents/code/themes.js:31
 msgid "Grid spacing (px):"
 msgstr ""

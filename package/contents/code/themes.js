@@ -16,7 +16,9 @@ var list = [
         settings: [
             { key: "palette", type: "choice", label: N_("Palette:"), choices: [N_("Tropical"), N_("Sunset"), N_("Night")], def: 0 },
             { key: "coastWarp", type: "int", label: N_("Coastline irregularity (px):"), min: 0, max: 80, step: 5, def: 30 },
-            { key: "decor", type: "bool", label: N_("Palm trees, kayak and seabirds"), def: true },
+            { key: "palms", type: "bool", label: N_("Palm trees"), def: true },
+            { key: "kayak", type: "bool", label: N_("Kayak"), def: true },
+            { key: "birds", type: "bool", label: N_("Seabirds"), def: true },
             { key: "timeOfDay", type: "bool", label: N_("Tint by time of day"), def: false },
             { key: "strip", type: "choice", label: N_("Permanent beach:"), choices: [N_("None"), N_("Left"), N_("Right"), N_("Top"), N_("Bottom")], def: 0 },
             { key: "stripWidth", type: "int", label: N_("Permanent beach width (px):"), min: 60, max: 400, step: 20, def: 160 }

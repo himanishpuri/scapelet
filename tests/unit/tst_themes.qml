@@ -16,7 +16,9 @@ TestCase {
         const v = Themes.resolve("beach", "{}");
         compare(v.palette, 0);
         compare(v.coastWarp, 30);
-        compare(v.decor, true);
+        compare(v.palms, true);
+        compare(v.kayak, true);
+        compare(v.birds, true);
         compare(v.timeOfDay, false);
         compare(v.strip, 0);
         compare(v.stripWidth, 160);
@@ -29,10 +31,10 @@ TestCase {
     }
 
     function test_resolve_rejects_invalid() {
-        const v = Themes.resolve("beach", '{"beach":{"palette":7,"coastWarp":500,"decor":"yes","stripWidth":100.5}}');
+        const v = Themes.resolve("beach", '{"beach":{"palette":7,"coastWarp":500,"palms":"yes","stripWidth":100.5}}');
         compare(v.palette, 0);
         compare(v.coastWarp, 30);
-        compare(v.decor, true);
+        compare(v.palms, true);
         compare(v.stripWidth, 160);
     }
 

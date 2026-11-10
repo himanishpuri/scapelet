@@ -38,7 +38,9 @@ ThemeBase {
         fragmentShader: Qt.resolvedUrl("ocean.frag.qsb")
     }
 
-    readonly property bool decor: theme.settings.decor ?? true
+    readonly property bool showPalms: theme.settings.palms ?? true
+    readonly property bool showKayak: theme.settings.kayak ?? true
+    readonly property bool showBirds: theme.settings.birds ?? true
     readonly property int stripSide: theme.settings.strip ?? 0
     readonly property real stripWidth: stripSide > 0 ? (theme.settings.stripWidth ?? 160) : 0
     // Icons, widgets and a top or bottom beach: what the kayak's lane must stay clear of.
@@ -113,7 +115,7 @@ ThemeBase {
         id: palms
         anchors.fill: parent
         z: 2
-        items: theme.decor ? Beach.palmSpots(theme.env.spots, theme.env.clusters) : []
+        items: theme.showPalms ? Beach.palmSpots(theme.env.spots, theme.env.clusters) : []
         delegate: Image {
             id: palm
             required property string key
@@ -124,7 +126,7 @@ ThemeBase {
 
             source: Qt.resolvedUrl("palm.svg")
             sourceSize: Qt.size(64, 64)
-            width: 44 + 16 * seed
+            width: 28 + 10 * seed
             height: width
             x: bx - width / 2
             y: by - height / 2
@@ -167,7 +169,7 @@ ThemeBase {
         readonly property real from: theme.stripSide === 1 ? theme.stripWidth + 40 : -80
         readonly property real to: theme.stripSide === 2 ? theme.width - theme.stripWidth - 40 : theme.width + 80
         z: 3
-        visible: theme.decor && lane >= 0
+        visible: theme.showKayak && lane >= 0
         source: Qt.resolvedUrl("kayak.svg")
         sourceSize: Qt.size(64, 24)
         x: from + ((theme.env.time * 16 / 3769.911184) % 1) * (to - from)   // one crossing every 236 s
@@ -181,7 +183,7 @@ ThemeBase {
         readonly property real cycle: theme.env.time * 80 / 3769.911184
         readonly property real p: (cycle % 1) / 0.4
         z: 4
-        visible: theme.decor && p <= 1
+        visible: theme.showBirds && p <= 1
         x: -120 + (theme.width + 240) * p
         y: theme.height * (0.15 + 0.7 * World.hash01(Math.floor(cycle), 7)) - 60 * p
 
