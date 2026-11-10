@@ -7,10 +7,33 @@ import org.kde.plasma.plasmoid
 WallpaperItem {
     id: root
 
+    IconProbe {
+        id: probe
+        host: root
+        debug: root.configuration.DebugLog
+    }
+
+    // Icons present when the desktop loads get their islands instantly;
+    // changes after this timer animate with the configured delays.
+    Timer {
+        id: settle
+        interval: 2000
+        onTriggered: scene.animateChanges = true
+    }
+
+    Connections {
+        target: probe
+        function onAvailableChanged() {
+            if (probe.available && !scene.animateChanges) {
+                settle.start();
+            }
+        }
+    }
+
     Scene {
         id: scene
         anchors.fill: parent
-        iconRects: []
+        iconRects: probe.rects
         animateChanges: false
         running: root.configuration.AnimateWater
         fps: root.configuration.Fps
