@@ -5,11 +5,11 @@ VERSION := 0.1.0
 QSB     ?= qsb-qt6
 PKG     := package
 DEST    := $(HOME)/.local/share/plasma/wallpapers/$(ID)
-SHADERS := $(wildcard $(PKG)/contents/shaders/*.frag)
+SHADERS := $(wildcard $(PKG)/contents/shaders/*.frag $(PKG)/contents/themes/*/*.frag)
 QSBS    := $(SHADERS:.frag=.frag.qsb)
 DBUS    := qdbus-qt6 org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript
 
-.PHONY: all shaders install uninstall reload apply restore debug-on debug-off harness snapshot test lint dist clean
+.PHONY: all shaders install uninstall reload apply restore debug-on debug-off harness snapshot scenario test lint dist clean
 
 all: shaders
 
@@ -50,11 +50,14 @@ snapshot: shaders
 	mkdir -p build
 	qml-qt6 tests/harness/Harness.qml -- --snapshot $(CURDIR)/build/harness.png
 
+scenario: shaders
+	QT_FORCE_STDERR_LOGGING=1 qml-qt6 tests/harness/Harness.qml -- --script events 2>&1 | grep -o 'event: .*' | diff - tests/harness/events.expected
+
 test:
 	QT_QPA_PLATFORM=offscreen qmltestrunner-qt6 -input tests/unit
 
 lint:
-	-qmllint-qt6 $(PKG)/contents/ui/*.qml tests/harness/*.qml tests/unit/*.qml
+	-qmllint-qt6 $(PKG)/contents/ui/*.qml $(PKG)/contents/engine/*.qml $(PKG)/contents/themes/*/*.qml tests/harness/*.qml tests/unit/*.qml
 
 dist: shaders
 	mkdir -p dist

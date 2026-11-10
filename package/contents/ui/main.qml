@@ -3,9 +3,11 @@
 import QtQuick
 import QtQuick.Window
 import org.kde.plasma.plasmoid
+import "../engine"
 
 WallpaperItem {
     id: root
+    accentColor: engine.accentColor
 
     IconProbe {
         id: probe
@@ -18,13 +20,13 @@ WallpaperItem {
     Timer {
         id: settle
         interval: 2000
-        onTriggered: scene.animateChanges = true
+        onTriggered: engine.animateChanges = true
     }
 
     Connections {
         target: probe
         function onAvailableChanged() {
-            if (probe.available && !scene.animateChanges) {
+            if (probe.available && !engine.animateChanges) {
                 settle.start();
             }
         }
@@ -45,18 +47,20 @@ WallpaperItem {
         }
     }
 
-    Scene {
-        id: scene
+    Engine {
+        id: engine
         anchors.fill: parent
-        iconRects: probe.rects
+        input: probe.rects
         animateChanges: false
-        running: root.configuration.AnimateWater && !root.covered
+        running: root.configuration.Animate && !root.covered
         fps: root.configuration.Fps
-        shoreDistance: root.configuration.ShoreDistance
-        coastWarp: root.configuration.CoastWarp
+        renderScale: root.configuration.RenderScale / 100
+        influenceRadius: root.configuration.InfluenceRadius
         appearDelay: root.configuration.AppearDelay
         disappearDelay: root.configuration.DisappearDelay
         morphDuration: root.configuration.MorphDuration
-        renderScale: root.configuration.RenderScale / 100
+        theme: root.configuration.Theme ?? "beach"
+        themeSettingsJson: root.configuration.ThemeSettings ?? "{}"
+        debug: root.configuration.DebugLog
     }
 }

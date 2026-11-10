@@ -1,8 +1,12 @@
 // SPDX-FileCopyrightText: 2026 himanishpuri <himanishpuri2203@gmail.com>
 // SPDX-License-Identifier: GPL-3.0-or-later
+pragma ComponentBehavior: Bound
+
 import QtQuick
 import QtQuick.Controls as QQC2
+import QtQuick.Layouts
 import org.kde.kirigami as Kirigami
+import "../code/themes.js" as Themes
 
 Kirigami.FormLayout {
     id: root
@@ -10,30 +14,72 @@ Kirigami.FormLayout {
 
     property alias formLayout: root
 
-    property alias cfg_ShoreDistance: shoreDistance.value
-    property alias cfg_CoastWarp: coastWarp.value
+    property alias cfg_InfluenceRadius: influenceRadius.value
     property alias cfg_AppearDelay: appearDelay.value
     property alias cfg_DisappearDelay: disappearDelay.value
     property alias cfg_MorphDuration: morphDuration.value
-    property alias cfg_AnimateWater: animateWater.checked
+    property alias cfg_Animate: animate.checked
     property alias cfg_Fps: fps.value
     property alias cfg_RenderScale: renderScale.value
     property alias cfg_PauseWhenCovered: pauseWhenCovered.checked
     property alias cfg_DebugLog: debugLog.checked
 
-    QQC2.SpinBox {
-        id: shoreDistance
-        Kirigami.FormData.label: i18n("Island size (px):")
-        from: 40
-        to: 150
-        stepSize: 5
+    property string cfg_Theme
+    property string cfg_ThemeSettings
+
+    readonly property var themeEntry: Themes.find(cfg_Theme)
+    readonly property var themeValues: Themes.resolve(themeEntry.id, cfg_ThemeSettings)
+
+    function setThemeValue(key, value) {
+        cfg_ThemeSettings = Themes.store(cfg_ThemeSettings, themeEntry.id, key, value);
     }
 
+    QQC2.ComboBox {
+        id: themeBox
+        Kirigami.FormData.label: i18n("Theme:")
+        model: Themes.list.map(t => i18n(t.name))
+        currentIndex: Math.max(0, Themes.list.findIndex(t => t.id === root.cfg_Theme))
+        onActivated: index => root.cfg_Theme = Themes.list[index].id
+    }
+
+    Repeater {
+        model: root.themeEntry.settings
+        delegate: RowLayout {
+            id: row
+            required property var modelData
+            readonly property var value: root.themeValues[modelData.key]
+            Kirigami.FormData.label: modelData.type === "bool" ? "" : i18n(modelData.label)
+
+            QQC2.SpinBox {
+                visible: row.modelData.type === "int"
+                from: row.modelData.min ?? 0
+                to: row.modelData.max ?? 100
+                stepSize: row.modelData.step ?? 1
+                value: row.modelData.type === "int" ? row.value : 0
+                onValueModified: root.setThemeValue(row.modelData.key, value)
+            }
+            QQC2.CheckBox {
+                visible: row.modelData.type === "bool"
+                text: i18n(row.modelData.label)
+                checked: row.modelData.type === "bool" && row.value === true
+                onToggled: root.setThemeValue(row.modelData.key, checked)
+            }
+            QQC2.ComboBox {
+                visible: row.modelData.type === "choice"
+                model: (row.modelData.choices ?? []).map(c => i18n(c))
+                currentIndex: row.modelData.type === "choice" ? row.value : 0
+                onActivated: index => root.setThemeValue(row.modelData.key, index)
+            }
+        }
+    }
+
+    Kirigami.Separator { Kirigami.FormData.isSection: true }
+
     QQC2.SpinBox {
-        id: coastWarp
-        Kirigami.FormData.label: i18n("Coastline irregularity (px):")
-        from: 0
-        to: 80
+        id: influenceRadius
+        Kirigami.FormData.label: i18n("Area around each icon (px):")
+        from: 40
+        to: 150
         stepSize: 5
     }
 
@@ -62,8 +108,8 @@ Kirigami.FormLayout {
     }
 
     QQC2.CheckBox {
-        id: animateWater
-        text: i18n("Animate water")
+        id: animate
+        text: i18n("Animate")
     }
 
     QQC2.SpinBox {

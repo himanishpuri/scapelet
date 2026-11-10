@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 import QtQuick
 
-// One icon's contribution to the land mask.
+// One source's contribution to the influence field.
 ShaderEffect {
     id: blob
 
@@ -12,6 +12,8 @@ ShaderEffect {
     required property real bw
     required property real bh
     required property bool present
+    required property bool lifted
+    required property real seed
 
     property bool animate: true
     property int appearDelay: 2000
@@ -34,29 +36,37 @@ ShaderEffect {
     width: 2 * (halfRect.x + reach)
     height: 2 * (halfRect.y + reach)
     visible: strength > 0.001
-    fragmentShader: Qt.resolvedUrl("../shaders/blob.frag.qsb")
+    fragmentShader: Qt.resolvedUrl("../shaders/field.frag.qsb")
 
     function apply() {
-        if (present) {
-            shrink.stop();
-            if (animate) {
-                grow.restart();
-            } else {
-                strength = 1;
-            }
-        } else {
-            grow.stop();
+        grow.stop();
+        shrink.stop();
+        settle.stop();
+        if (!present) {
             if (animate) {
                 shrink.restart();
             } else {
                 strength = 0;
                 expired(key);
             }
+        } else if (!animate) {
+            strength = lifted ? 0.5 : 1;
+        } else if (lifted) {
+            settle.to = 0.5;      // picked up: the land thins to a shoal at once
+            settle.restart();
+        } else if (strength > 0.001) {
+            settle.to = 1;        // put back, or revived before it sank: no delay
+            settle.restart();
+        } else {
+            grow.restart();
         }
     }
 
     onPresentChanged: apply()
+    onLiftedChanged: apply()
     Component.onCompleted: apply()
+
+    NumberAnimation { id: settle; target: blob; property: "strength"; duration: 300; easing.type: Easing.OutCubic }
 
     SequentialAnimation {
         id: grow

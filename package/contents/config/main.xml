@@ -10,17 +10,19 @@
   <kcfgfile name=""/>
 
   <group name="General">
-    <entry name="ShoreDistance" type="Int">
-      <label>Island size in pixels (shoreline distance from the icon core)</label>
+    <entry name="Theme" type="String">
+      <label>Theme id</label>
+      <default>beach</default>
+    </entry>
+    <entry name="ThemeSettings" type="String">
+      <label>Settings of every theme as JSON: { "themeId": { "key": value } }</label>
+      <default>{}</default>
+    </entry>
+    <entry name="InfluenceRadius" type="Int">
+      <label>Area around each icon in pixels (shoreline distance from the icon core)</label>
       <default>70</default>
       <min>40</min>
       <max>150</max>
-    </entry>
-    <entry name="CoastWarp" type="Int">
-      <label>Coastline irregularity in pixels</label>
-      <default>30</default>
-      <min>0</min>
-      <max>80</max>
     </entry>
     <entry name="AppearDelay" type="Int">
       <label>Delay before a new island starts growing, in milliseconds</label>
@@ -40,8 +42,8 @@
       <min>200</min>
       <max>5000</max>
     </entry>
-    <entry name="AnimateWater" type="Bool">
-      <label>Animate water, swash and foam</label>
+    <entry name="Animate" type="Bool">
+      <label>Animate the wallpaper</label>
       <default>true</default>
     </entry>
     <entry name="Fps" type="Int">
