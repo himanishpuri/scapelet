@@ -30,12 +30,27 @@ WallpaperItem {
         }
     }
 
+    // Loaded through a Loader so a missing org.kde.taskmanager module only disables pausing.
+    Loader {
+        id: pauseLoader
+        active: root.configuration.PauseWhenCovered
+        source: "PauseMonitor.qml"
+        onLoaded: item.screenGeometry = Qt.binding(() => Qt.rect(root.Screen.virtualX, root.Screen.virtualY, root.Screen.width, root.Screen.height))
+    }
+
+    readonly property bool covered: pauseLoader.status === Loader.Ready && pauseLoader.item.covered
+    onCoveredChanged: {
+        if (root.configuration.DebugLog) {
+            console.info("archipelago: covered=" + covered);
+        }
+    }
+
     Scene {
         id: scene
         anchors.fill: parent
         iconRects: probe.rects
         animateChanges: false
-        running: root.configuration.AnimateWater
+        running: root.configuration.AnimateWater && !root.covered
         fps: root.configuration.Fps
         shoreDistance: root.configuration.ShoreDistance
         coastWarp: root.configuration.CoastWarp
