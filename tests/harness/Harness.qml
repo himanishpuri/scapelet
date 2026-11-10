@@ -118,6 +118,7 @@ Window {
         theme: win.arg("--theme", "beach")
         themeSettingsJson: win.arg("--settings", "{}")
         hourOverride: Number(win.arg("--hour", "-1"))
+        fps: Number(win.arg("--fps", "30"))
     }
 
     Connections {

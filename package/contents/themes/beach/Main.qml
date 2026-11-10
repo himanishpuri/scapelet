@@ -36,6 +36,9 @@ ThemeBase {
         property color cSandDry: theme.pal.sandDry
         property color cSandHigh: theme.pal.sandHigh
         fragmentShader: Qt.resolvedUrl("ocean.frag.qsb")
+        // Cached while the gulls fly: the sea is then redrawn only when time or the field changes,
+        // so frames between engine ticks cost a texture copy, not the ocean shader.
+        layer.enabled: birdClock.running
     }
 
     readonly property bool showPalms: theme.settings.palms ?? true
@@ -177,10 +180,24 @@ ThemeBase {
         rotation: 4 * Math.sin(theme.env.time * 0.5)
     }
 
+    // Gull clock: follows env.time, but advances on every displayed frame while the gulls are in
+    // view, so they glide at the display rate even when the engine ticks slowly (battery saver).
+    // Resyncs to env.time when it drifts, wraps or was paused.
+    property real birdTime: 0
+    FrameAnimation {
+        id: birdClock
+        readonly property real coarse: ((theme.env.time * 80 / 3769.911184) % 1) / 0.4
+        running: theme.env.running && theme.showBirds && (coarse <= 1.05 || coarse >= 2.45)
+        onTriggered: {
+            const next = theme.birdTime + frameTime;
+            theme.birdTime = Math.abs(next - theme.env.time) > 0.5 ? theme.env.time : next;
+        }
+    }
+
     // Three gulls crossing every 47 s (80 per time wrap), in view for the first 40 % of each cycle.
     Item {
         id: flock
-        readonly property real cycle: theme.env.time * 80 / 3769.911184
+        readonly property real cycle: theme.birdTime * 80 / 3769.911184
         readonly property real p: (cycle % 1) / 0.4
         z: 4
         visible: theme.showBirds && p <= 1
@@ -199,7 +216,7 @@ ThemeBase {
                 height: 24
                 source: Qt.resolvedUrl("bird.svg")
                 sourceSize: Qt.size(48, 32)
-                transform: Scale { origin.y: 12; yScale: 0.75 + 0.25 * Math.sin(theme.env.time * 9 + bird.index * 2) }
+                transform: Scale { origin.y: 12; yScale: 0.75 + 0.25 * Math.sin(theme.birdTime * 9 + bird.index * 2) }
             }
         }
     }
