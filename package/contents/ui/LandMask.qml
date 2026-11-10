@@ -3,7 +3,7 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
-import "../code/islands.js" as Islands
+import "../code/world.js" as Islands
 
 // Keeps one IslandBlob per icon rectangle.
 Item {
