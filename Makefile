@@ -12,7 +12,7 @@ I18N_SRC := $(wildcard $(PKG)/contents/ui/*.qml) $(PKG)/contents/code/themes.js
 MOS      := $(patsubst po/%.po,$(PKG)/contents/locale/%/LC_MESSAGES/$(DOMAIN).mo,$(wildcard po/*.po))
 DBUS    := qdbus-qt6 org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript
 
-.PHONY: all shaders install uninstall reload apply restore debug-on debug-off harness snapshot scenario stats gpu test lint dist clean pot mo
+.PHONY: all shaders install uninstall reload apply restore debug-on debug-off harness snapshot scenario stats gpu test lint dist clean pot mo srctar rpm
 
 all: shaders
 
@@ -83,6 +83,14 @@ lint:
 dist: shaders mo
 	mkdir -p dist
 	tar -czf dist/$(ID)-$(VERSION).tar.gz -C $(PKG) .
+
+srctar:
+	mkdir -p dist
+	git archive --prefix=archipelago-$(VERSION)/ -o dist/archipelago-$(VERSION).tar.gz HEAD
+
+rpm: srctar
+	podman run --rm --security-opt label=disable -v $(CURDIR):/src -e QT_QPA_PLATFORM=offscreen registry.fedoraproject.org/fedora:44 sh -c \
+		'dnf -y -q install rpm-build make gettext qt6-qtshadertools && rpmbuild -bb --define "_sourcedir /src/dist" --define "_rpmdir /src/dist/rpm" /src/packaging/plasma-wallpaper-archipelago.spec'
 
 clean:
 	rm -f $(QSBS)
