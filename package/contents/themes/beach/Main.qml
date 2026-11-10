@@ -17,6 +17,7 @@ ThemeBase {
         anchors.fill: parent
         blending: false
         property var mask: theme.env.field
+        property var noiseTex: theme.env.noise
         property real time: theme.env.time
         property real sigma: theme.env.influenceRadius
         property real warp: theme.settings.coastWarp ?? 30

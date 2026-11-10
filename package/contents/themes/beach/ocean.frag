@@ -14,6 +14,7 @@ layout(std140, binding = 0) uniform buf {
     vec2 resolution;  // px, item size
 };
 layout(binding = 1) uniform sampler2D mask; // r = land sum, g = shallow sum
+layout(binding = 2) uniform sampler2D noiseTex; // r, g: warp fields, b: phase field; tile = 2048 px
 
 const float E0 = 0.0183156;
 const float C0 = 0.8217; // sqrt(-ln(0.5 * (1 - E0) + E0)): shoreline is where land == 0.5
@@ -42,10 +43,6 @@ float vnoise(vec2 p) {
     return mix(mix(a, b, u.x), mix(c, d, u.x), u.y);
 }
 
-float fbm2(vec2 p) {
-    return 0.667 * vnoise(p) + 0.333 * vnoise(p * 2.03 + 17.0);
-}
-
 // Approximate signed distance to the shoreline in px: negative inland, positive offshore.
 float shoreDist(float land) {
     float g = clamp(land, 0.0, 1.0) * (1.0 - E0) + E0;
@@ -57,7 +54,8 @@ void main() {
     float t = time;
 
     // Static coastline warp.
-    vec2 w = vec2(fbm2(px * 0.006 + 3.1), fbm2(px * 0.006 + 41.7)) - 0.5;
+    vec4 n = texture(noiseTex, px / 2048.0);
+    vec2 w = n.rg - 0.5;
     vec2 uv = (px + w * 2.0 * warp) / resolution;
     vec4 m = texture(mask, uv);
     float s = shoreDist(m.r);
@@ -74,7 +72,7 @@ void main() {
     water += ripple * 0.07 * (0.4 + 0.6 * shallow);
 
     // Swash: the waterline moves in and out by 6 px, phase varies along the coast.
-    float phase = 6.2832 * vnoise(px * 0.004 + 9.0);
+    float phase = 6.2832 * n.b;
     float sw = s + 6.0 * sin(t * 0.9 + phase); // > 0 is water
 
     // Clear water over sand near the shore.

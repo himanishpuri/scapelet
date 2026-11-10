@@ -9,7 +9,7 @@ SHADERS := $(wildcard $(PKG)/contents/shaders/*.frag $(PKG)/contents/themes/*/*.
 QSBS    := $(SHADERS:.frag=.frag.qsb)
 DBUS    := qdbus-qt6 org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript
 
-.PHONY: all shaders install uninstall reload apply restore debug-on debug-off harness snapshot scenario test lint dist clean
+.PHONY: all shaders install uninstall reload apply restore debug-on debug-off harness snapshot scenario stats gpu test lint dist clean
 
 all: shaders
 
@@ -52,6 +52,12 @@ snapshot: shaders
 
 scenario: shaders
 	QT_FORCE_STDERR_LOGGING=1 qml-qt6 tests/harness/Harness.qml -- --script events 2>&1 | grep -o 'event: .*' | diff - tests/harness/events.expected
+
+stats: shaders
+	QT_FORCE_STDERR_LOGGING=1 QML_XHR_ALLOW_FILE_READ=1 qml-qt6 tests/harness/Harness.qml -- --stats --maximized $(ARGS) 2>&1 | grep --line-buffered 'stats:'
+
+gpu:
+	sh tools/gpu-usage.sh
 
 test:
 	QT_QPA_PLATFORM=offscreen qmltestrunner-qt6 -input tests/unit

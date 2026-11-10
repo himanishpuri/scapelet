@@ -40,6 +40,7 @@ Item {
         return Qt.rgba(t.r, t.g, t.b, 1);
     }
     readonly property Item field: fieldTexture
+    readonly property Item noise: noiseAtlas.texture
     readonly property int frameCount: ticker.frames
     readonly property string themeId: Themes.find(theme).id
     readonly property var themeSettings: Themes.resolve(themeId, themeSettingsJson)
@@ -118,6 +119,8 @@ Item {
             engine.clockHour = d.getHours() + d.getMinutes() / 60;
         }
     }
+
+    NoiseAtlas { id: noiseAtlas }
 
     Roster {
         id: land

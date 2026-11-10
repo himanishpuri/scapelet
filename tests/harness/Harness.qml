@@ -35,6 +35,8 @@ Window {
     property int liftedIndex: -1
     property var widgets: []
     readonly property bool snapshotMode: snapshotPath !== ""
+    property int swaps: 0
+    onFrameSwapped: swaps += 1
 
     ListModel {
         id: icons
@@ -241,6 +243,7 @@ Window {
 
     Text {
         id: fpsText
+        visible: !win.stats
         property int lastFrames: 0
         property int fps: 0
         anchors.top: parent.top
@@ -260,6 +263,34 @@ Window {
                 fpsText.fps = engine.frameCount - fpsText.lastFrames;
                 fpsText.lastFrames = engine.frameCount;
             }
+        }
+    }
+
+    // --stats: once a second print engine ticks, presented frames and this process's CPU share.
+    Timer {
+        property int lastSwaps: 0
+        property int lastTicks: 0
+        property real lastCpu: -1
+        interval: 1000
+        repeat: true
+        running: win.stats
+        onTriggered: {
+            let cpu = "n/a";
+            try {
+                const xhr = new XMLHttpRequest();
+                xhr.open("GET", "file:///proc/self/stat", false);   // needs QML_XHR_ALLOW_FILE_READ=1
+                xhr.send();
+                const f = xhr.responseText.split(") ")[1].split(" ");
+                const used = Number(f[11]) + Number(f[12]);          // utime + stime, 1/100 s
+                if (lastCpu >= 0) {
+                    cpu = (used - lastCpu) + "%";
+                }
+                lastCpu = used;
+            } catch (e) {
+            }
+            console.info("stats: ticks=" + (engine.frameCount - lastTicks) + " swaps=" + (win.swaps - lastSwaps) + " cpu=" + cpu);
+            lastTicks = engine.frameCount;
+            lastSwaps = win.swaps;
         }
     }
 }
