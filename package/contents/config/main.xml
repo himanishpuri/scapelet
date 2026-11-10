@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    SPDX-FileCopyrightText: 2026 himanishpuri <himanishpuri2203@gmail.com>
+    SPDX-License-Identifier: GPL-3.0-or-later
+-->
+<kcfg xmlns="http://www.kde.org/standards/kcfg/1.0"
+      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:schemaLocation="http://www.kde.org/standards/kcfg/1.0
+      http://www.kde.org/standards/kcfg/1.0/kcfg.xsd" >
+  <kcfgfile name=""/>
+
+  <group name="General">
+    <entry name="ShoreDistance" type="Int">
+      <label>Island size in pixels (shoreline distance from the icon core)</label>
+      <default>70</default>
+      <min>40</min>
+      <max>150</max>
+    </entry>
+    <entry name="CoastWarp" type="Int">
+      <label>Coastline irregularity in pixels</label>
+      <default>30</default>
+      <min>0</min>
+      <max>80</max>
+    </entry>
+    <entry name="AppearDelay" type="Int">
+      <label>Delay before a new island starts growing, in milliseconds</label>
+      <default>2000</default>
+      <min>0</min>
+      <max>10000</max>
+    </entry>
+    <entry name="DisappearDelay" type="Int">
+      <label>Delay before an abandoned island starts sinking, in milliseconds</label>
+      <default>3000</default>
+      <min>0</min>
+      <max>10000</max>
+    </entry>
+    <entry name="MorphDuration" type="Int">
+      <label>Duration of island growth and sinking, in milliseconds</label>
+      <default>1800</default>
+      <min>200</min>
+      <max>5000</max>
+    </entry>
+    <entry name="AnimateWater" type="Bool">
+      <label>Animate water, swash and foam</label>
+      <default>true</default>
+    </entry>
+    <entry name="Fps" type="Int">
+      <label>Frame rate limit for the water animation</label>
+      <default>30</default>
+      <min>5</min>
+      <max>60</max>
+    </entry>
+    <entry name="RenderScale" type="Int">
+      <label>Render scale of the ocean in percent</label>
+      <default>100</default>
+      <min>50</min>
+      <max>100</max>
+    </entry>
+    <entry name="PauseWhenCovered" type="Bool">
+      <label>Pause animation while a maximized or full-screen window covers the desktop</label>
+      <default>true</default>
+    </entry>
+    <entry name="DebugLog" type="Bool">
+      <label>Log icon tracking to the journal</label>
+      <default>false</default>
+    </entry>
+  </group>
+
+</kcfg>
