@@ -15,6 +15,13 @@ WallpaperItem {
         debug: root.configuration.DebugLog
     }
 
+    WidgetProbe {
+        id: widgetProbe
+        host: root
+        active: root.configuration.IncludeWidgets
+        debug: root.configuration.DebugLog
+    }
+
     // Icons present when the desktop loads get their islands instantly;
     // changes after this timer animate with the configured delays.
     Timer {
@@ -50,7 +57,8 @@ WallpaperItem {
     Engine {
         id: engine
         anchors.fill: parent
-        input: probe.rects
+        input: probe.sources.concat(widgetProbe.sources)
+        dragging: probe.dragging
         animateChanges: false
         running: root.configuration.Animate && !root.covered
         fps: root.configuration.Fps

@@ -46,6 +46,10 @@
       <label>Animate the wallpaper</label>
       <default>true</default>
     </entry>
+    <entry name="IncludeWidgets" type="Bool">
+      <label>Grow land around desktop widgets</label>
+      <default>true</default>
+    </entry>
     <entry name="Fps" type="Int">
       <label>Frame rate limit for the water animation</label>
       <default>30</default>

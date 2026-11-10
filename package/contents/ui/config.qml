@@ -19,6 +19,7 @@ Kirigami.FormLayout {
     property alias cfg_DisappearDelay: disappearDelay.value
     property alias cfg_MorphDuration: morphDuration.value
     property alias cfg_Animate: animate.checked
+    property alias cfg_IncludeWidgets: includeWidgets.checked
     property alias cfg_Fps: fps.value
     property alias cfg_RenderScale: renderScale.value
     property alias cfg_PauseWhenCovered: pauseWhenCovered.checked
@@ -110,6 +111,11 @@ Kirigami.FormLayout {
     QQC2.CheckBox {
         id: animate
         text: i18n("Animate")
+    }
+
+    QQC2.CheckBox {
+        id: includeWidgets
+        text: i18n("Grow land around desktop widgets")
     }
 
     QQC2.SpinBox {

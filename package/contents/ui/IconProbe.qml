@@ -9,14 +9,14 @@ import QtQuick
 //   .view                                -> FolderView
 //   .view                                -> GridView
 //   .contentItem.children[i].blank       -> false for real icons
-// Every link is optional; when one is missing, `available` is false and `rects` is empty.
+// Every link is optional; when one is missing, `available` is false and `sources` is empty.
 Item {
     id: probe
     visible: false
 
     property Item host: null
     property bool debug: false
-    property var rects: []
+    property var sources: []
     property bool available: false
     property string signature: "?"
 
@@ -25,6 +25,19 @@ Item {
     readonly property var grid: folderView ? (folderView.view ?? null) : null
     readonly property var gridModel: grid ? (grid.model ?? null) : null
     readonly property var gridContent: grid ? (grid.contentItem ?? null) : null
+    readonly property string brokenLink: !host ? "host" : !host.parent ? "parent" : !folderLayer ? "folderViewLayer"
+                                         : !folderView ? "view" : !grid ? "view.view" : !gridContent ? "contentItem" : ""
+    readonly property bool rawDragging: folderView ? folderView.dragging === true : false
+    // Held 400 ms past the end of the drag: the dropped icon's delegate reappears just after it.
+    readonly property bool dragging: rawDragging || dragHold.running
+    onRawDraggingChanged: {
+        if (!rawDragging) {
+            dragHold.restart();
+        }
+        kick();
+    }
+
+    Timer { id: dragHold; interval: 400 }
 
     onGridChanged: kick()
     onGridModelChanged: kick()
@@ -41,9 +54,9 @@ Item {
         }
         signature = sig;
         available = ok;
-        rects = list;
+        sources = list;
         if (debug) {
-            console.info("archipelago: icons=" + list.length + " available=" + ok);
+            console.info("archipelago: icons=" + list.length + " available=" + ok + (ok ? "" : " missing=" + brokenLink));
         }
     }
 
@@ -61,7 +74,9 @@ Item {
                 continue;
             }
             const r = c.mapToItem(probe.host, 0, 0, c.width, c.height);
-            out.push({ x: Math.round(r.x), y: Math.round(r.y), w: Math.round(r.width), h: Math.round(r.height) });
+            const label = c.display ?? c.name;   // `display` from Plasma 6.7, `name` before
+            out.push({ id: label ? "icon:" + label : undefined, kind: "icon",
+                       x: Math.round(r.x), y: Math.round(r.y), w: Math.round(r.width), h: Math.round(r.height) });
         }
         out.sort((a, b) => a.x - b.x || a.y - b.y);
         publish(out, true);
