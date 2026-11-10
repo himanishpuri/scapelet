@@ -21,12 +21,12 @@ WallpaperItem {
 
     function exportPicture() {
         const dir = StandardPaths.writableLocation(StandardPaths.PicturesLocation).toString().replace(/^file:\/\//, "");
-        const path = dir + "/archipelago-" + Qt.formatDateTime(new Date(), "yyyyMMdd-HHmmss") + ".png";
+        const path = dir + "/scapelet-" + Qt.formatDateTime(new Date(), "yyyyMMdd-HHmmss") + ".png";
         engine.exportImage(path, ok => {
             if (ok) {
                 root.openUrlRequested("file://" + path);   // opens the picture in the default viewer
             } else {
-                console.warn("archipelago: could not save " + path);
+                console.warn("scapelet: could not save " + path);
             }
         });
     }
@@ -87,14 +87,14 @@ WallpaperItem {
                                   && (powerLoader.item.onBattery || powerLoader.item.profile === "power-saver")
     onSaverChanged: {
         if (root.configuration.DebugLog) {
-            console.info("archipelago: saver=" + saver);
+            console.info("scapelet: saver=" + saver);
         }
     }
 
     readonly property bool covered: pauseLoader.status === Loader.Ready && pauseLoader.item.covered
     onCoveredChanged: {
         if (root.configuration.DebugLog) {
-            console.info("archipelago: covered=" + covered);
+            console.info("scapelet: covered=" + covered);
         }
     }
 

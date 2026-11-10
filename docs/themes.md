@@ -5,7 +5,7 @@
 
 # Writing a theme
 
-Archipelago is an environment engine with interchangeable themes. The engine
+Scapelet is an environment engine with interchangeable themes. The engine
 tracks the icons and widgets on the desktop, groups them into clusters, renders
 an influence field around them and emits four core events. A theme turns that
 into pictures. Beach (islands in a tropical sea) and Blueprint (a technical

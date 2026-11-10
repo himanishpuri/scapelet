@@ -9,16 +9,17 @@ Product: plasma-desktop (Folder View containment) and libplasma (`WallpaperItem`
 
 ## Use case
 
-Wallpaper plugins can react to the desktop they decorate. Archipelago
-(<https://github.com/himanishpuri/archipelago>) grows islands around desktop
-icons, merges them when icons sit together and lets them sink when an icon is
-moved or deleted. Other ideas in the same spirit: light that pools around
+Wallpaper plugins can react to the desktop they decorate. Scapelet
+(<https://github.com/himanishpuri/scapelet>) is a wallpaper engine whose themes
+build a landscape around the desktop icons: its Beach theme grows islands
+around icons, merges them when icons sit together and lets them sink when an
+icon is moved or deleted. Other ideas in the same spirit: light that pools around
 icons, a grid that avoids them, or a wallpaper that keeps its focal point clear
 of icons.
 
 ## What a wallpaper has to do today
 
-There is no public way to learn where the icons are. Archipelago walks
+There is no public way to learn where the icons are. Scapelet walks
 Plasma-internal QML objects:
 
 - `WallpaperItem.parent.folderViewLayer.view.view.contentItem.children[*]`

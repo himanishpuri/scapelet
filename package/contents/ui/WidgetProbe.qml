@@ -40,7 +40,7 @@ Item {
             signature = sig;
             sources = out;
             if (debug) {
-                console.info("archipelago: widgets=" + out.length);
+                console.info("scapelet: widgets=" + out.length);
             }
         }
         pending = sig;

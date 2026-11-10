@@ -20,7 +20,7 @@ Item {
 
     function report() {
         if (debug) {
-            console.info("archipelago: power locked=" + locked + " battery=" + onBattery + " profile=" + profile);
+            console.info("scapelet: power locked=" + locked + " battery=" + onBattery + " profile=" + profile);
         }
     }
 

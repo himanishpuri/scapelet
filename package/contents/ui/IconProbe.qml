@@ -56,7 +56,7 @@ Item {
         available = ok;
         sources = list;
         if (debug) {
-            console.info("archipelago: icons=" + list.length + " available=" + ok + (ok ? "" : " missing=" + brokenLink));
+            console.info("scapelet: icons=" + list.length + " available=" + ok + (ok ? "" : " missing=" + brokenLink));
         }
     }
 

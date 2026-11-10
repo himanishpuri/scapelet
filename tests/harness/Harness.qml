@@ -18,7 +18,7 @@ Window {
     width: Number(arg("--width", "1280"))
     height: Number(arg("--height", "800"))
     visible: true
-    title: "Archipelago harness"
+    title: "Scapelet harness"
     color: "black"
 
     readonly property int cellW: 100

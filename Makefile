@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: 2026 himanishpuri <himanishpuri2203@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
-ID      := io.github.himanishpuri.archipelago
-VERSION := 0.2.0
+ID      := io.github.himanishpuri.scapelet
+VERSION := 0.3.0
 QSB     ?= qsb-qt6
 PKG     := package
 DEST    := $(HOME)/.local/share/plasma/wallpapers/$(ID)
@@ -49,7 +49,7 @@ debug-off:
 pot:
 	mkdir -p po
 	xgettext --from-code=UTF-8 -L JavaScript -ki18n:1 -ki18nc:1c,2 -ki18np:1,2 -kN_:1 \
-		--package-name=archipelago --package-version=$(VERSION) --msgid-bugs-address=himanishpuri2203@gmail.com \
+		--package-name=scapelet --package-version=$(VERSION) --msgid-bugs-address=himanishpuri2203@gmail.com \
 		-o po/$(DOMAIN).pot $(I18N_SRC)
 
 mo: $(MOS)
@@ -86,11 +86,11 @@ dist: shaders mo
 
 srctar:
 	mkdir -p dist
-	git archive --prefix=archipelago-$(VERSION)/ -o dist/archipelago-$(VERSION).tar.gz HEAD
+	git archive --prefix=scapelet-$(VERSION)/ -o dist/scapelet-$(VERSION).tar.gz HEAD
 
 rpm: srctar
 	podman run --rm --security-opt label=disable -v $(CURDIR):/src -e QT_QPA_PLATFORM=offscreen registry.fedoraproject.org/fedora:44 sh -c \
-		'dnf -y -q install rpm-build make gettext qt6-qtshadertools && rpmbuild -bb --define "_sourcedir /src/dist" --define "_rpmdir /src/dist/rpm" /src/packaging/plasma-wallpaper-archipelago.spec'
+		'dnf -y -q install rpm-build make gettext qt6-qtshadertools && rpmbuild -bb --define "_sourcedir /src/dist" --define "_rpmdir /src/dist/rpm" /src/packaging/plasma-wallpaper-scapelet.spec'
 
 clean:
 	rm -f $(QSBS)

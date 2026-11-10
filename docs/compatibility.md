@@ -7,7 +7,7 @@
 
 ## Icon tracking across Plasma versions
 
-Archipelago reads desktop icon positions from Plasma-internal QML objects. Plasma
+Scapelet reads desktop icon positions from Plasma-internal QML objects. Plasma
 has no public API for this, so every link of the chain is optional: when one is
 missing, the wallpaper shows open water instead of failing.
 
@@ -61,8 +61,8 @@ Icon names never leave memory: they are not logged, drawn or exported.
 ## Diagnosing a broken chain
 
 1. `make debug-on`
-2. `journalctl --user -u plasma-plasmashell.service -f | grep archipelago:`
-3. A broken chain logs `archipelago: icons=0 available=false missing=<link>`,
+2. `journalctl --user -u plasma-plasmashell.service -f | grep scapelet:`
+3. A broken chain logs `scapelet: icons=0 available=false missing=<link>`,
    where `<link>` is the first missing link (`host`, `parent`,
    `folderViewLayer`, `view`, `view.view` or `contentItem`).
 4. `make debug-off` when done.

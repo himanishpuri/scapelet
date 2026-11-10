@@ -83,7 +83,7 @@ Item {
             t.iconsGrouped(c);
         }
         if (engine.debug && r.added.length + r.removed.length + r.moved.length + formed.length > 0) {
-            console.info("archipelago: events added=" + r.added.length + " removed=" + r.removed.length
+            console.info("scapelet: events added=" + r.added.length + " removed=" + r.removed.length
                          + " moved=" + r.moved.length + " grouped=" + formed.length);
         }
     }
@@ -169,7 +169,7 @@ Item {
         onLoaded: item.settings = Qt.binding(() => engine.themeSettings)
         onStatusChanged: {
             if (status === Loader.Error) {
-                console.warn("archipelago: theme '" + engine.themeId + "' failed to load");
+                console.warn("scapelet: theme '" + engine.themeId + "' failed to load");
                 if (engine.themeId !== Themes.list[0].id) {
                     engine.loadTheme(Themes.list[0].id);
                 }

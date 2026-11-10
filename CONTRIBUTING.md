@@ -50,5 +50,5 @@ See [docs/themes.md](docs/themes.md).
 
 ## Translations
 
-Copy `po/plasma_wallpaper_io.github.himanishpuri.archipelago.pot` to
+Copy `po/plasma_wallpaper_io.github.himanishpuri.scapelet.pot` to
 `po/<lang>.po`, translate it, and run `make install`.
