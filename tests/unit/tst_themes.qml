@@ -73,7 +73,7 @@ TestCase {
         compare(Themes.find("forest").id, "forest");
         const v = Themes.resolve("forest", '{"forest":{"density":0,"palette":2}}');
         compare(v.palette, 2);
-        compare(v.density, 8);
+        compare(v.density, 12);
         compare(v.sway, true);
         compare(v.sparrows, true);
         compare(v.timeOfDay, false);

@@ -11,7 +11,7 @@ layout(std140, binding = 0) uniform buf {
     float time;       // seconds, wraps at 3769.911184; 0 while the trees do not sway
     float cell;       // px, spacing of the tree grid
     float keep;       // 0..1, share of grid cells that hold a tree
-    float size;       // px, scale of a tree: up to 2 sizes tall and 0.8 sizes to each side; >= cell
+    float size;       // px, scale of a tree: up to 2.1 sizes tall and 0.97 sizes to each side; >= cell
     float sway;       // px, how far a tree top moves in the wind
     vec2 resolution;  // px, item size
     vec4 tint;        // light colour, multiplies the result
@@ -50,42 +50,75 @@ vec3 leaf(float k) {
     return cLeaf5.rgb;
 }
 
-// Half width of a crown at height v (0 = root, 1 = top) as a share of the tree's half width; 0 outside.
-// kind: 0 fir (tiers), 1 round, 2 cypress, 3 two stacked balls, 4 broad crown on a long trunk.
-// tier: 0..1 position inside a fir tier (0 elsewhere).
-float crown(float kind, float v, float seed, out float tier) {
-    tier = 0.0;
-    if (kind < 0.5) {
-        float t = (v - 0.14) / 0.86;
-        if (t < 0.0 || t > 1.0) return 0.0;
-        float n = 3.0 + floor(seed * 2.0);
-        tier = fract(t * n);
-        return (1.0 - 0.80 * t) * (1.0 - 0.45 * tier) * smoothstep(0.0, 0.10, tier) * (1.0 - smoothstep(0.94, 1.0, t));
-    }
-    if (kind < 1.5) {
-        float y = (v - 0.62) / 0.38;
-        return sqrt(max(0.0, 1.0 - y * y));
-    }
-    if (kind < 2.5) {
-        float y = (v - 0.56) / 0.44;
-        return 0.52 * pow(max(0.0, 1.0 - y * y), 0.75);
-    }
-    if (kind < 3.5) {
-        float a = (v - 0.42) / 0.27;
-        float b = (v - 0.77) / 0.23;
-        return max(sqrt(max(0.0, 1.0 - a * a)), 0.70 * sqrt(max(0.0, 1.0 - b * b)));
-    }
-    float y = (v - 0.72) / 0.28;
-    return sqrt(max(0.0, 1.0 - y * y)) * (0.93 + 0.07 * sin(v * 38.0 + seed * 6.2832));
+float circle(vec2 p, vec2 c, float r) {
+    return length(p - c) - r;
 }
 
-// Height where the crown starts: the trunk shows below it.
-float crownBase(float kind) {
-    if (kind < 0.5) return 0.14;
-    if (kind < 1.5) return 0.24;
-    if (kind < 2.5) return 0.12;
-    if (kind < 3.5) return 0.15;
-    return 0.44;
+float smin(float a, float b, float k) {
+    float h = max(k - abs(a - b), 0.0) / k;
+    return min(a, b) - h * h * k * 0.25;
+}
+
+// Signed distance (px, negative inside) to the crown of a tree, in the tree's own frame:
+// p.x px from the trunk, p.y px above the root. H: height, w: half width, seed: 0..1.
+// kind: 0 fir, 1 lumpy broadleaf, 2 cypress, 3 stacked balls, 4 wide crown on a long trunk, 5 slim spruce.
+// mark: 0..1 strength of the pen marks drawn on the crown (branch chevrons, scallops).
+float crown(float kind, vec2 p, float H, float w, float seed, out float mark) {
+    mark = 0.0;
+    if (kind < 0.5 || kind > 4.5) {
+        // Fir and spruce: a pointed cone made of drooping tiers, each tier wider at its lower edge.
+        float base = 0.10 * H;
+        float t = (p.y - base) / (H - base);
+        float n = kind < 0.5 ? 3.0 + floor(seed * 3.0) : 5.0 + floor(seed * 3.0);
+        float tier = fract(t * n);
+        float side = 0.62 + 0.05 * sin(floor(t * n) * 2.3 + seed * 9.0);   // tiers differ a little
+        float cw = w * (1.0 - t) * (side + (1.0 - side) * (1.0 - tier) * (1.0 - tier));
+        float d = abs(p.x) - cw;
+        d = max(d, max(base - p.y, p.y - H));
+        // Branch marks: a short dash on each side of every tier, sloping down and out.
+        float tierH = (H - base) / n;
+        float u = abs(p.x) / max(cw, 1.0);
+        float target = (0.62 - 0.45 * u) * tierH;
+        mark = (1.0 - smoothstep(0.5, 1.3, abs(tier * tierH - target))) * step(0.22, u) * step(u, 0.62) * step(t, 0.9);
+        return d;
+    }
+    if (kind < 1.5) {
+        // Broadleaf: a big lobe with two smaller ones low on either side.
+        // The crown sits low: its lowest lobe ends a fifth of the way up, so the trunk stays short.
+        float r = 0.42 * H * (0.85 + 0.15 * seed);
+        float top = min(H, 0.20 * H + 1.62 * r);
+        float d = circle(p, vec2(0.0, top - 0.72 * r), 0.72 * r);
+        d = smin(d, circle(p, vec2(-0.50 * r, top - 1.05 * r - 0.10 * r * seed), (0.46 + 0.08 * seed) * r), 5.0);
+        d = smin(d, circle(p, vec2(0.48 * r, top - 1.00 * r), (0.54 - 0.08 * seed) * r), 5.0);
+        return d;
+    }
+    if (kind < 2.5) {
+        // Cypress: a tall flame, widest a third of the way up, pointed at the top.
+        float base = 0.07 * H;
+        float t = (p.y - base) / (H - base);
+        float cw = w * 0.62 * (t < 0.32 ? sqrt(max(0.0, 1.0 - pow((t - 0.32) / 0.32, 2.0)))
+                                         : pow(max(0.0, 1.0 - (t - 0.32) / 0.68), 0.85));
+        return max(abs(p.x) - cw, max(base - p.y, p.y - H));
+    }
+    if (kind < 3.5) {
+        // Two or three balls stacked, smaller toward the top.
+        float A = 0.88 * H;
+        float y0 = 0.12 * H;
+        if (seed < 0.5) {
+            float r1 = min(w, 0.30 * A), r2 = min(0.8 * w, 0.24 * A);
+            return smin(circle(p, vec2(0.0, y0 + r1), r1), circle(p, vec2(0.0, y0 + 0.72 * A), r2), 4.0);
+        }
+        float r1 = min(w, 0.22 * A), r2 = min(0.85 * w, 0.18 * A), r3 = min(0.7 * w, 0.14 * A);
+        float d = circle(p, vec2(0.0, y0 + 0.22 * A), r1);
+        d = smin(d, circle(p, vec2(0.0, y0 + 0.55 * A), r2), 4.0);
+        return smin(d, circle(p, vec2(0.0, y0 + 0.82 * A), r3), 4.0);
+    }
+    // Wide crown of four lobes high on a long trunk.
+    float r = min(w, 0.5 * H);
+    float d = circle(p, vec2(0.0, H - 0.55 * r), 0.55 * r);
+    d = smin(d, circle(p, vec2(-0.55 * r, H - 0.80 * r), 0.45 * r), 5.0);
+    d = smin(d, circle(p, vec2(0.58 * r, H - 0.76 * r), (0.40 + 0.06 * seed) * r), 5.0);
+    return smin(d, circle(p, vec2(-0.05 * r, H - 1.00 * r), 0.50 * r), 5.0);
 }
 
 // Short pen strokes in the grass, one per 12 x 6 px cell. dens: share of cells with a stroke.
@@ -121,16 +154,16 @@ void main() {
     // The clearing is a little brighter than the forest floor.
     grass *= 1.0 + 0.05 * smoothstep(0.0, 0.5, texture(mask, qt_TexCoord0).r);
 
-    // Trees: one per grid cell, drawn front (lower on screen) to back. A tree is at most 2 sizes
-    // tall and 0.8 sizes (plus the sway) to each side. Its root lies 0.15..0.85 into its cell, so
-    // rows up to 0.85 + 2 sizes / cell below and columns up to 0.85 + 0.8 sizes / cell aside can
+    // Trees: one per grid cell, drawn front (lower on screen) to back. A tree is at most 2.1 sizes
+    // tall and 0.97 sizes (plus the sway) to each side. Its root lies 0.15..0.85 into its cell, so
+    // rows up to 0.85 + 2.1 sizes / cell below and columns up to 0.85 + 0.97 sizes / cell aside can
     // cover a pixel: 3 rows and 3 columns at the default spacing (cell == size). The row above
     // only adds its shadow.
     vec2 id = floor(px / cell);
     vec4 acc = vec4(0.0);      // premultiplied colour of the trees over this pixel
     float shade = 0.0;         // 0..1 ground shadow
-    int rows = int(floor(0.85 + 2.0 * size / cell));
-    int side = int(floor(0.85 + (0.8 * size + sway) / cell));
+    int rows = int(floor(0.85 + 2.1 * size / cell));
+    int side = int(floor(0.85 + (0.97 * size + sway) / cell));
     for (int dj = rows; dj >= -1; --dj) {
         for (int di = -side; di <= side; ++di) {
             if (acc.a > 0.995) continue;
@@ -140,9 +173,10 @@ void main() {
             if (k.x > keep) continue;
             vec2 root = (c + 0.15 + 0.7 * h) * cell;
             float kindSel = fract(k.x * 61.0);
-            float kind = kindSel < 0.36 ? 0.0 : (kindSel < 0.58 ? 1.0 : (kindSel < 0.72 ? 2.0 : (kindSel < 0.86 ? 3.0 : 4.0)));
-            float height = size * (1.25 + 0.75 * k.y);
-            float halfW = min(0.8, (0.46 + 0.26 * fract(k.y * 37.0)) * (kind < 0.5 ? 1.0 : (kind < 1.5 ? 1.15 : (kind < 2.5 ? 1.0 : (kind < 3.5 ? 0.95 : 1.3))))) * size;
+            float kind = kindSel < 0.30 ? 0.0 : (kindSel < 0.40 ? 5.0 : (kindSel < 0.60 ? 1.0 : (kindSel < 0.74 ? 2.0 : (kindSel < 0.86 ? 3.0 : 4.0))));
+            float height = size * (1.35 + 0.75 * k.y);
+            float widthK = kind < 0.5 ? 1.3 : (kind < 1.5 ? 1.25 : (kind < 2.5 ? 1.0 : (kind < 3.5 ? 1.0 : (kind < 4.5 ? 1.4 : 0.62))));
+            float halfW = (0.44 + 0.22 * fract(k.y * 37.0)) * widthK * size;     // at most 0.93 size; lobes reach 1.05 halfW
 
             // The tree shrinks into the ground where its middle is near an icon. lev is the distance to
             // the nearest icon's core in units of sigma (2: far away). A wide band of lev keeps each tree
@@ -169,27 +203,35 @@ void main() {
             float rate = floor(300.0 + 240.0 * h.x) / 600.0;     // 0.5..0.9 rad/s, a multiple of 1/600
             float flutter = floor(1200.0 + 600.0 * h.y) / 600.0; // 2..3 rad/s
             q.x -= sway * v * v * (gust * (0.75 + 0.25 * sin(time * flutter + 6.2832 * h.x)) + 0.2 * sin(time * rate + 6.2832 * h.y));
-            float tier;
-            float cw = crown(kind, v, h.x, tier) * halfW;
-            float trunk = v < crownBase(kind) + 0.06 ? max(1.5, 0.07 * halfW + 0.012 * height) : 0.0;
-            float aCrown = clamp((cw - abs(q.x)) * s + 0.5, 0.0, 1.0) * step(0.001, cw);
-            float aTrunk = clamp((trunk - abs(q.x)) * s + 0.5, 0.0, 1.0) * step(0.001, trunk);
+            float mark;
+            float cd = crown(kind, q, height, halfW, h.x, mark);
+            float trunkTop = kind > 3.5 && kind < 4.5 ? 0.6 * height : 0.35 * height;
+            float tw = max(2.0, 0.07 * halfW + 0.02 * height);
+            float td = max(abs(q.x) - tw, q.y - trunkTop);
+            float aCrown = clamp(0.5 - cd * s, 0.0, 1.0);
+            float aTrunk = clamp(0.5 - td * s, 0.0, 1.0);
             float a = max(aCrown, aTrunk) * fade;
             if (a <= 0.0) continue;
 
-            vec3 col = leaf(floor(fract(k.y * 91.0) * 6.0));
-            float u = q.x / halfW;
-            col *= 0.94 + 0.12 * h.y;                                    // each tree a little lighter or darker
-            col *= 1.0 - 0.10 * u + 0.08 * (v - 0.5);                    // lit from the top left
-            col *= kind < 0.5 ? 0.86 + 0.20 * tier : 1.0;                // fir tiers: dark under each tier
-            if (kind > 0.5 && fract(k.x * 29.0) < 0.3) {
-                // Scale pattern: rows of arcs.
-                vec2 t = vec2(q.x / 10.0, q.y / 8.0);
-                t.x += 0.5 * mod(floor(t.y), 2.0);
-                float arc = length(fract(t) - vec2(0.5, 0.0));
-                col *= 1.0 - 0.16 * (1.0 - smoothstep(0.0, 0.07, abs(arc - 0.46)));
+            vec3 col;
+            if (aCrown >= aTrunk) {
+                col = leaf(floor(fract(k.y * 91.0) * 6.0));
+                col *= 0.94 + 0.12 * h.y;                                    // each tree a little lighter or darker
+                col *= 1.0 - 0.07 * q.x / halfW + 0.06 * (v - 0.5);          // lit from the top left
+                // Watercolour: the paint is mottled and pools a little darker along the edge.
+                col *= 0.93 + 0.14 * texture(noiseTex, px / 70.0 + h).r;
+                col *= 1.0 - 0.10 * (1.0 - smoothstep(0.0, 4.0, -cd * s));
+                if (kind > 0.5 && kind < 4.5 && kind != 2.0 && fract(k.x * 29.0) < 0.35) {
+                    // Scales: rows of arcs, slightly uneven.
+                    vec2 t = vec2(q.x / 13.0, q.y / 9.0 + 0.3 * h.x);
+                    t.x += 0.5 * mod(floor(t.y), 2.0) + 0.08 * sin(floor(t.y) * 3.1);
+                    float arc = length(fract(t) - vec2(0.5, 0.0));
+                    mark = (1.0 - smoothstep(0.0, 0.08, abs(arc - 0.45))) * step(fract(t.y), 0.5) * smoothstep(2.0, 5.0, -cd);
+                }
+                col *= 1.0 - 0.32 * mark;
+            } else {
+                col = cTrunk.rgb * (0.9 + 0.2 * h.y);
             }
-            col = aCrown >= aTrunk ? col : cTrunk.rgb * (0.9 + 0.2 * h.y);
             col *= 0.96 + 0.08 * grainTex.r;                              // paper grain
             acc += (1.0 - acc.a) * a * vec4(col, 1.0);
         }

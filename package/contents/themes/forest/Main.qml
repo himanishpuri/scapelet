@@ -25,7 +25,7 @@ ThemeBase {
         property var noiseTex: theme.env.noise
         property real time: theme.swaying ? theme.env.time : 0
         // Density 1..10 fills more of the grid; 11..15 packs the grid closer (trees keep their size).
-        readonly property real density: theme.settings.density ?? 8
+        readonly property real density: theme.settings.density ?? 12
         property real size: 52
         property real cell: density > 10 ? size * (1 - 0.06 * (density - 10)) : size
         property real keep: Math.min(1, 0.28 + 0.072 * density)
