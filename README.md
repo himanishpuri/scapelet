@@ -28,16 +28,22 @@ Scapelet is the engine that watches your desktop. Themes decide what the world
 looks like:
 
 - **Beach**: sandy islands in a turquoise sea. Bigger islands grow palm trees, a
-  kayak paddles through open water and seabirds fly past now and then. Pick a
-  tropical, sunset or night palette, let the light follow the time of day, or
-  add a permanent beach along one edge of the screen.
+  kayak paddles through open water, sailing ships and motor boats cross now and
+  then, and seabirds fly past. Pick a tropical, sunset or night palette, let
+  the light follow the time of day, or add a permanent beach along one edge of
+  the screen.
 - **Meadow**: your icons rest on puffy clouds that float over wind-swept grass
   and cast soft shadows on it. More clouds drift by, and one to three
   butterflies wander past. Spring, summer and dusk palettes.
 - **Forest**: a paper-cut forest of firs, round trees, cypresses and stacked
   bushes that sway in the wind. The trees step back to open a clearing around
-  your icons and grow back when the icons leave, and sparrows fly over. Summer,
-  autumn and winter palettes, with a density setting.
+  your icons and grow back when the icons leave. Hikers walk the winding
+  footpaths, a woodcutter now and then fells a tree that slowly grows back, and
+  sparrows fly over. Summer, autumn and winter palettes, with a density setting.
+- **City**: an old industrial town of crowded houses, clock towers, factories
+  and windmills along winding streets. A square opens around your icons with
+  trees, lamps and market stalls; chimneys smoke and pigeons fly over. Day,
+  dusk and night palettes.
 - **Cosmos**: a slowly drifting night sky with the Milky Way and coloured
   stars. A glowing nebula gathers around every icon, grouped icons are joined
   into constellations, and a shooting star crosses now and then. Violet, teal
@@ -45,8 +51,10 @@ looks like:
 - **Blueprint**: your desktop drawn as a technical plan, with contour lines
   around every group of icons.
 
-More themes can be added without touching the engine. A city is on the list of
-ideas.
+Click the empty desktop and the theme answers: water ripples, birds fly up,
+pigeons scatter. This can be turned off.
+
+More themes can be added without touching the engine.
 
 ## Install
 
@@ -74,7 +82,9 @@ Right-click the desktop, choose **Desktop and Wallpaper**, and set
 - switch themes, and change each theme's own options;
 - make the area around each icon (an island, a cloud, a clearing) bigger or smaller;
 - choose how quickly that area appears and disappears;
-- turn the palm trees, kayak and seabirds on or off one by one;
+- turn the palm trees, kayak, ships and seabirds on or off one by one;
+- choose how many footpaths and hikers the forest has, and whether a woodcutter works there;
+- turn the reaction to clicks on the empty desktop on or off;
 - choose whether desktop widgets get an area of their own too.
 
 ## Kind to your battery

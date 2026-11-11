@@ -9,9 +9,9 @@ Scapelet is an environment engine with interchangeable themes. The engine
 tracks the icons and widgets on the desktop, groups them into clusters, renders
 an influence field around them and emits four core events. A theme turns that
 into pictures. Beach (islands in a tropical sea), Meadow (clouds over
-wind-swept grass), Forest (a clearing in a forest), Cosmos (nebulae and
-constellations) and Blueprint (a technical plan, the minimal reference) ship
-with the plugin.
+wind-swept grass), Forest (a clearing in a forest), City (a square in an old
+town), Cosmos (nebulae and constellations) and Blueprint (a technical plan, the
+minimal reference) ship with the plugin.
 
 ## Files
 
@@ -66,6 +66,7 @@ size, sets `env` and `settings`, and reads `accentColor`.
 | `iconRemoved(source)` | event | a source disappeared |
 | `iconsMoved(moves)` | event | sources changed position |
 | `iconsGrouped(cluster)` | event | a cluster formed or grew |
+| `tapped(x, y)` | event | a left click on empty desktop, in theme coordinates; only while "React to clicks" is on |
 | `accentColor` | output | colour offered to Plasma's "accent colour from wallpaper" |
 
 `env` members:
@@ -86,12 +87,17 @@ size, sets `env` and `settings`, and reads `accentColor`.
 
 ## Core events
 
-| Event | Payload | Beach | Meadow | Forest | Cosmos |
-|---|---|---|---|---|---|
-| `iconAdded` | `{ id, kind, x, y, w, h, lifted }` | sand appears | cloud gathers | clearing opens | star flares up |
-| `iconsGrouped` | `{ id, members, size, x, y, w, h, cx, cy }` | island expands | clouds merge | clearings join | constellation forms |
-| `iconRemoved` | as `iconAdded` | water returns | cloud dissolves | trees grow back | star collapses |
-| `iconsMoved` | `[{ id, from: { x, y, w, h }, to: { x, y, w, h } }]` | coastline changes | cloud follows | clearing follows | constellation shifts |
+| Event | Payload | Beach | Meadow | Forest | City | Cosmos |
+|---|---|---|---|---|---|---|
+| `iconAdded` | `{ id, kind, x, y, w, h, lifted }` | sand appears | cloud gathers | clearing opens | square opens | star flares up |
+| `iconsGrouped` | `{ id, members, size, x, y, w, h, cx, cy }` | island expands | clouds merge | clearings join | squares join | constellation forms |
+| `iconRemoved` | as `iconAdded` | water returns | cloud dissolves | trees grow back | houses return | star collapses |
+| `iconsMoved` | `[{ id, from: { x, y, w, h }, to: { x, y, w, h } }]` | coastline changes | cloud follows | clearing follows | square follows | constellation shifts |
+
+`tapped` is not one of the four core events: it carries no source. Answer it
+with something short that ends by itself; `engine/Ring.qml` (a spreading ring)
+and `engine/Burst.qml` (sprites flying apart) are ready to create with
+`createObject`. The harness clicks with `--tap <x>,<y>`.
 
 ## Rules
 

@@ -30,6 +30,10 @@ Chain used:
 - Widgets: `WallpaperItem.parent.appletsLayout.children[*]` that have an
   `applet` property; identity from `applet.plasmoid.id`, with the rectangle as
   a fallback.
+- Clicks: the child of `folderViewLayer.view` (the `FolderView`) that has a
+  `pressX` property, its `MouseEventListener`; its `clicked(mouse)` signal,
+  with `FolderView.hoveredItem` null or `blank` for empty desktop. Checked on
+  6.8.2. When the link is missing, clicks simply cause no reaction.
 
 Icon names never leave memory: they are not logged, drawn or exported.
 
