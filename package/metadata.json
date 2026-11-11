@@ -11,5 +11,5 @@
         "Name": "Scapelet",
         "Version": "0.4.0"
     },
-    "X-Plasma-API-Minimum-Version": "6.0"
+    "X-Plasma-API-Minimum-Version": "6.3"
 }
