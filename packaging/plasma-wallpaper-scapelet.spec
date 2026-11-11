@@ -3,7 +3,7 @@
 %global plugin_id io.github.himanishpuri.scapelet
 
 Name:           plasma-wallpaper-scapelet
-Version:        0.4.0
+Version:        0.4.1
 Release:        1%{?dist}
 Summary:        Plasma wallpaper that grows a landscape around your desktop icons
 License:        GPL-3.0-or-later
@@ -38,6 +38,11 @@ cp -a package/. %{buildroot}%{_datadir}/plasma/wallpapers/%{plugin_id}/
 %{_datadir}/plasma/wallpapers/%{plugin_id}/
 
 %changelog
+* Wed Nov 11 2026 himanishpuri <himanishpuri2203@gmail.com> - 0.4.1-1
+- Require Plasma 6.3 in the plugin metadata
+- Settings text is plain English; i18n() calls removed
+- make lint fails on any qmllint warning
+
 * Wed Nov 11 2026 himanishpuri <himanishpuri2203@gmail.com> - 0.4.0-1
 - New themes: Meadow (clouds over grass) and Cosmos (nebulae and constellations)
 
