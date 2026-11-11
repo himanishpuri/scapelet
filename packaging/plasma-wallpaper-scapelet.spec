@@ -3,7 +3,7 @@
 %global plugin_id io.github.himanishpuri.scapelet
 
 Name:           plasma-wallpaper-scapelet
-Version:        0.5.0
+Version:        0.6.0
 Release:        1%{?dist}
 Summary:        Plasma wallpaper that grows a landscape around your desktop icons
 License:        GPL-3.0-or-later
@@ -38,6 +38,13 @@ cp -a package/. %{buildroot}%{_datadir}/plasma/wallpapers/%{plugin_id}/
 %{_datadir}/plasma/wallpapers/%{plugin_id}/
 
 %changelog
+* Wed Nov 11 2026 himanishpuri <himanishpuri2203@gmail.com> - 0.6.0-1
+- New theme: City, an old industrial town that opens a square around the icons
+- Clicks on the empty desktop make the theme react; can be turned off
+- Forest: winding footpaths, hikers and a woodcutter, each configurable
+- Beach: old sailing ships and modern boats cross the sea
+- Beach: no script error at start-up
+
 * Wed Nov 11 2026 himanishpuri <himanishpuri2203@gmail.com> - 0.5.0-1
 - New theme: Forest, a paper-cut forest that opens a clearing around the icons
 - Areas grow outward from their icon and ease in and out instead of popping
