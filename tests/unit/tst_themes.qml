@@ -87,8 +87,14 @@ TestCase {
         compare(v.density, 12);
         compare(v.sway, true);
         compare(v.sparrows, true);
+        compare(v.paths, 2);
+        compare(v.hikers, 3);
+        compare(v.pathIcons, 0);
+        compare(v.woodcutter, true);
         compare(v.timeOfDay, false);
         compare(Themes.resolve("forest", '{"forest":{"density":15}}').density, 15);
+        compare(Themes.resolve("forest", '{"forest":{"paths":3,"hikers":0}}').paths, 2);
+        compare(Themes.resolve("forest", '{"forest":{"paths":3,"hikers":0}}').hikers, 0);
     }
 
     // Every theme names the shared settings in its own words.

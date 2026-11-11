@@ -9,7 +9,7 @@ TestCase {
 
     function test_palettes_complete() {
         compare(Forest.palettes.length, 3);
-        const keys = ["grassLight", "grassMid", "grassDeep", "ink", "shadow", "trunk",
+        const keys = ["grassLight", "grassMid", "grassDeep", "ink", "shadow", "trunk", "dirt",
                       "leaf0", "leaf1", "leaf2", "leaf3", "leaf4", "leaf5", "accent"];
         for (const p of Forest.palettes) {
             for (const k of keys) {

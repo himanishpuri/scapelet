@@ -43,6 +43,10 @@ var list = [
             { key: "palette", type: "choice", label: "Palette:", choices: ["Summer", "Autumn", "Winter"], def: 0 },
             { key: "density", type: "int", label: "Tree density:", min: 1, max: 15, step: 1, def: 12 },
             { key: "sway", type: "bool", label: "Trees sway in the wind", def: true },
+            { key: "paths", type: "int", label: "Footpaths:", min: 0, max: 2, step: 1, def: 2 },
+            { key: "pathIcons", type: "choice", label: "Icon on a footpath:", choices: ["Hikers walk around it", "The path bends around it"], def: 0 },
+            { key: "hikers", type: "int", label: "Hikers:", min: 0, max: 4, step: 1, def: 3 },
+            { key: "woodcutter", type: "bool", label: "Woodcutter", def: true },
             { key: "sparrows", type: "bool", label: "Sparrows", def: true },
             { key: "timeOfDay", type: "bool", label: "Tint by time of day", def: false }
         ]
