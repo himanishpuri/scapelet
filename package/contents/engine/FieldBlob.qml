@@ -23,7 +23,8 @@ ShaderEffect {
     signal expired(string key)
 
     // Shader uniforms.
-    property real strength: 0
+    property real strength: 1            // amplitude: 1 at rest, 0.5 while lifted
+    property real growth: 0              // 0..1 size
     property real sigma: 70
     property real sigmaWide: sigma * 2.5
     property vector2d halfRect: Qt.vector2d(bw * 0.25, bh * 0.25)
@@ -35,28 +36,32 @@ ShaderEffect {
     y: by + bh / 2 - height / 2
     width: 2 * (halfRect.x + reach)
     height: 2 * (halfRect.y + reach)
-    visible: strength > 0.001
+    visible: growth > 0.001
     fragmentShader: Qt.resolvedUrl("../shaders/field.frag.qsb")
 
     function apply() {
         grow.stop();
         shrink.stop();
+        recover.stop();
         settle.stop();
         if (!present) {
             if (animate) {
                 shrink.restart();
             } else {
-                strength = 0;
+                growth = 0;
                 expired(key);
             }
-        } else if (!animate) {
+            return;
+        }
+        if (!animate) {
+            growth = 1;
             strength = lifted ? 0.5 : 1;
-        } else if (lifted) {
-            settle.to = 0.5;      // picked up: the land thins to a shoal at once
-            settle.restart();
-        } else if (strength > 0.001) {
-            settle.to = 1;        // put back, or revived before it sank: no delay
-            settle.restart();
+            return;
+        }
+        settle.to = lifted ? 0.5 : 1;     // picked up: the land thins to a shoal at once
+        settle.restart();
+        if (growth > 0.001) {
+            recover.restart();            // revived before it sank: no delay
         } else {
             grow.restart();
         }
@@ -67,17 +72,18 @@ ShaderEffect {
     Component.onCompleted: apply()
 
     NumberAnimation { id: settle; target: blob; property: "strength"; duration: 300; easing.type: Easing.OutCubic }
+    NumberAnimation { id: recover; target: blob; property: "growth"; to: 1; duration: 300; easing.type: Easing.OutCubic }
 
     SequentialAnimation {
         id: grow
         PauseAnimation { duration: blob.appearDelay }
-        NumberAnimation { target: blob; property: "strength"; to: 1; duration: blob.morphDuration; easing.type: Easing.InOutCubic }
+        NumberAnimation { target: blob; property: "growth"; to: 1; duration: blob.morphDuration; easing.type: Easing.InOutCubic }
     }
 
     SequentialAnimation {
         id: shrink
         PauseAnimation { duration: blob.disappearDelay }
-        NumberAnimation { target: blob; property: "strength"; to: 0; duration: blob.morphDuration; easing.type: Easing.InOutCubic }
+        NumberAnimation { target: blob; property: "growth"; to: 0; duration: blob.morphDuration; easing.type: Easing.InOutCubic }
         ScriptAction { script: blob.expired(blob.key) }
     }
 }
