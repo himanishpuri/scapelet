@@ -33,19 +33,29 @@ Chain used:
 
 Icon names never leave memory: they are not logged, drawn or exported.
 
-## Limits
+## What cannot be done
 
-- Icons exist only with the Folder View desktop layout
-  (`org.kde.plasma.folder`). With the "Desktop" layout the wallpaper shows open
-  water and still reacts to widgets.
+These limits come from Plasma or Wayland, not from Scapelet. Each one needs a
+change in Plasma before a wallpaper plugin can work around it.
+
+- **No public icon API.** Icon positions come from Plasma-internal objects (see
+  above). A Plasma release can rename them; the wallpaper then shows open water
+  until Scapelet is updated. `docs/upstream-request.md` asks for a public API.
+- **Icons only with Folder View.** Icons exist only with the Folder View
+  desktop layout (`org.kde.plasma.folder`). With the "Desktop" layout the
+  wallpaper shows open water and still reacts to widgets.
+- **No islands on the lock screen.** The lock screen greeter has no desktop
+  icons, so it shows open sea with the kayak and seabirds.
+- **No idle pause.** Wayland returns `NotSupported` for `GetSessionIdleTime`,
+  and there is no QML idle-time module. The lock pause and the display
+  power-off cover the same case.
+- **No drag preview under the pointer.** Plasma reports no pointer position
+  during an icon drag, so the lifted icon's island thins to a shoal and nothing
+  follows the pointer.
+- **No settings shared across screens.** Settings are stored per containment,
+  which means per screen and per activity. This is Plasma's design.
 - Folder View list mode needs `inPanel`, so it cannot occur on the desktop.
-- Settings are stored per containment, which means per screen and per activity.
-  This is Plasma's design.
-- There is no pause after the session has been idle: Wayland returns
-  `NotSupported` for `GetSessionIdleTime` and there is no QML idle-time module.
-  The lock pause and the display power-off cover the same case.
-- Plasma reports no pointer position during an icon drag, so a lifted icon's
-  island thins to a shoal; nothing follows the pointer.
+  Only icon mode is supported, which is the only mode a desktop can use.
 
 ## Test matrix
 
