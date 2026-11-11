@@ -1,6 +1,7 @@
 // SPDX-FileCopyrightText: 2026 himanishpuri <himanishpuri2203@gmail.com>
 // SPDX-License-Identifier: GPL-3.0-or-later
 .pragma library
+.import "../../code/world.js" as World
 
 // Index = Beach setting "palette". accent is exported as the wallpaper accent colour.
 var palettes = [
@@ -29,4 +30,22 @@ function palmSpots(spots, clusters) {
         }
     }
     return out;
+}
+
+// Ships: name is the picture (<name>.svg and <name>-shadow.svg, bow to the right), w x h its size in px.
+var oldShips = [{ name: "sloop", w: 96, h: 36 }, { name: "galleon", w: 128, h: 44 }];
+var modernShips = [{ name: "yacht", w: 104, h: 34 }, { name: "trawler", w: 100, h: 36 }];
+var corsair = { name: "corsair", w: 128, h: 44 };
+
+// The ship of crossing n for the Beach setting "ships" (0 none, 1 old sail, 2 modern, 3 mixed),
+// or null. Among old ships, about one crossing in seven is the black-sailed corsair.
+function ship(setting, n) {
+    if (setting < 1 || setting > 3) {
+        return null;
+    }
+    if (setting !== 2 && World.hash01(n + 0.13, 31) < 0.15) {
+        return corsair;
+    }
+    var pool = setting === 1 ? oldShips : (setting === 2 ? modernShips : oldShips.concat(modernShips));
+    return pool[Math.min(pool.length - 1, Math.floor(World.hash01(n + 0.13, 29) * pool.length))];
 }

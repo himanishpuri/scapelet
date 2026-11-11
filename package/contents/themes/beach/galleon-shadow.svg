@@ -1,0 +1,9 @@
+<!-- SPDX-FileCopyrightText: 2026 himanishpuri <himanishpuri2203@gmail.com> SPDX-License-Identifier: GPL-3.0-or-later -->
+<svg xmlns="http://www.w3.org/2000/svg" width="128" height="44" viewBox="0 0 128 44">
+<g fill="#000000">
+<path d="M34 12 L40 9 C64 6 98 9 120 22 C98 35 64 38 40 35 L34 32 Z"/>
+<path d="M60 5 Q67 22 60 39 L55 39 Q61 22 55 5 Z"/>
+<path d="M80 2 Q87 22 80 42 L75 42 Q81 22 75 2 Z"/>
+<path d="M99 7 Q106 22 99 37 L94 37 Q100 22 94 7 Z"/>
+</g>
+</svg>

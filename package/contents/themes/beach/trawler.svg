@@ -1,0 +1,18 @@
+<!-- SPDX-FileCopyrightText: 2026 himanishpuri <himanishpuri2203@gmail.com> SPDX-License-Identifier: GPL-3.0-or-later -->
+<svg xmlns="http://www.w3.org/2000/svg" width="100" height="36" viewBox="0 0 100 36">
+<g fill="none" stroke="#f4f0e6" stroke-linecap="round">
+<path d="M28 10 Q14 8 4 5" stroke-width="1.6" opacity="0.55"/>
+<path d="M28 26 Q14 28 4 31" stroke-width="1.6" opacity="0.55"/>
+<path d="M26 18.0 L14 18.0" stroke-width="2.4" stroke-dasharray="5 6" opacity="0.39"/>
+</g>
+<path d="M28 9 L66 8 C80 9 92 13 97 18 C92 23 80 27 66 28 L28 27 Q26 18 28 9 Z" fill="#c44d3a" stroke="#8f3528" stroke-width="1"/>
+<path d="M31 11.5 L66 10.5 C78 11.5 88 14.5 92 18 C88 21.500 78 24.5 66 25.5 L31 24.500 Q29.500 18 31 11.500 Z" fill="#e9dcc0"/>
+<rect x="33" y="13" width="9" height="10" rx="1" fill="#3b7a8c" stroke="#2b5c6a" stroke-width="0.6"/>
+<path d="M34.500 15.500 H40.500 M34.500 18 H40.500 M34.500 20.500 H40.500" stroke="#2b5c6a" stroke-width="0.5"/>
+<g fill="#f08a2c"><circle cx="46" cy="13.500" r="1.5"/><circle cx="46" cy="22.500" r="1.5"/><circle cx="50.500" cy="13.500" r="1.5"/></g>
+<rect x="60" y="12" width="13" height="12" rx="1.500" fill="#f4f0e6" stroke="#9aa3ad" stroke-width="0.7"/>
+<rect x="68.500" y="13.500" width="3" height="9" rx="0.8" fill="#2f5d7a"/>
+<path d="M44 18 L60 18" stroke="#6b4a32" stroke-width="1"/>
+<circle cx="52" cy="18" r="1.4" fill="#6b4a32"/>
+<path d="M78 18 L88 18" stroke="#b9a988" stroke-width="0.8"/>
+</svg>

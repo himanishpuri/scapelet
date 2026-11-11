@@ -15,6 +15,7 @@ var list = [
             { key: "coastWarp", type: "int", label: "Coastline irregularity (px):", min: 0, max: 80, step: 5, def: 30 },
             { key: "palms", type: "bool", label: "Palm trees", def: true },
             { key: "kayak", type: "bool", label: "Kayak", def: true },
+            { key: "ships", type: "choice", label: "Ships:", choices: ["None", "Old sail", "Modern", "Mixed"], def: 3 },
             { key: "birds", type: "bool", label: "Seabirds", def: true },
             { key: "timeOfDay", type: "bool", label: "Tint by time of day", def: false },
             { key: "strip", type: "choice", label: "Permanent beach:", choices: ["None", "Left", "Right", "Top", "Bottom"], def: 0 },

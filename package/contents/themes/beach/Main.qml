@@ -62,10 +62,6 @@ ThemeBase {
     }
     // px of open water the kayak keeps between itself and every obstacle.
     readonly property real clearance: 0.6 * theme.env.influenceRadius + (theme.settings.coastWarp ?? 30) + 16
-    onObstaclesChanged: kayak.refresh()
-    onClearanceChanged: kayak.refresh()
-    onWidthChanged: kayak.refresh()
-    onHeightChanged: kayak.refresh()
 
     // Transitions: rings of foam where the coast is about to change.
     Component {
@@ -123,17 +119,19 @@ ThemeBase {
     onIconsGrouped: cluster => ripple(cluster.cx, cluster.cy, Math.max(cluster.w, cluster.h) + reach,
                                       theme.env.appearDelay + theme.env.morphDuration)
 
-    // A click: gulls near it scatter, the kayak under it rocks, and open water ripples.
+    // A click: gulls near it scatter, the kayak or the ship under it rocks, and open water ripples.
     onTapped: (x, y) => {
         const lead = Paths.at(flock.route, flock.p);
         if (flock.visible && Math.hypot(x - lead.x, y - lead.y) < 110) {
             startle.restart();
             return;
         }
-        if (kayak.visible && Math.hypot(x - kayak.x, y - kayak.y) < 60) {
-            rocking.restart();
-            ripple(kayak.x, kayak.y, 90, 0);
-            return;
+        for (const boat of [kayak, ship]) {
+            if (boat.visible && Math.hypot(x - boat.x, y - boat.y) < 60) {
+                boat.tap();
+                ripple(boat.x, boat.y, 90, 0);
+                return;
+            }
         }
         for (const o of theme.obstacles) {
             if (Paths.rectDist(x, y, o) < 0.8 * theme.env.influenceRadius) {
@@ -194,21 +192,32 @@ ThemeBase {
         }
     }
 
-    // One kayak paddles a curved route from one screen edge to another, 16 routes per time wrap (236 s each).
-    // All motion derives from env.time: it stops when the engine pauses, and nothing jumps at the wrap.
-    // A route is kept until its crossing ends; when an icon blocks it, the kayak fades out and
-    // comes back on a clear route.
-    ShadowSprite {
-        id: kayak
-        readonly property real cycle: theme.env.time * 16 / 3769.911184
-        readonly property int n: Math.floor(cycle)
+    // A boat on a curved route from one screen edge to another: `crossings` routes per time wrap,
+    // in view for the first `share` of each. All motion derives from env.time: it stops when the
+    // engine pauses, and nothing jumps at the wrap. A route is kept until its crossing ends; when
+    // an icon blocks it, the boat fades out and comes back on a clear route.
+    component Vessel: ShadowSprite {
+        id: vessel
+        property int seed: 0
+        property int crossings: 16
+        property real phase: 0               // 0..1, shifts its crossings against those of other boats
+        property real share: 1
+        property real margin: 80             // px off screen where a route begins and ends
+        property real sway: 4                // degrees the bow swings to and fro
+        property real rockBy: 26             // degrees it rocks after a click
+        property bool shown: true
+        readonly property real cycle: theme.env.time * crossings / 3769.911184 + phase
+        readonly property int n: Math.floor(cycle) % crossings
         property var route: null
         property var pending: null
         property int routeN: -1
-        readonly property var pos: route ? Paths.at(route, cycle % 1) : null
+        readonly property var pos: route && cycle % 1 <= share ? Paths.at(route, (cycle % 1) / share) : null
 
         function refresh() {
-            const next = Paths.pick(17, n, theme.width, theme.height, 80, theme.obstacles, theme.clearance, 40);
+            if (!theme.obstacles) {
+                return;
+            }
+            const next = Paths.pick(seed, n, theme.width, theme.height, margin, theme.obstacles, theme.clearance, 40);
             if (n !== routeN || !theme.env.animateChanges) {
                 swap.stop();
                 opacity = 1;
@@ -222,27 +231,68 @@ ThemeBase {
         onNChanged: refresh()
         Component.onCompleted: refresh()
 
-        SequentialAnimation {
-            id: swap
-            NumberAnimation { target: kayak; property: "opacity"; to: 0; duration: 400 }
-            ScriptAction { script: kayak.route = kayak.pending }
-            NumberAnimation { target: kayak; property: "opacity"; to: 1; duration: 400 }
+        Connections {
+            target: theme
+            function onObstaclesChanged() { vessel.refresh() }
+            function onClearanceChanged() { vessel.refresh() }
+            function onWidthChanged() { vessel.refresh() }
+            function onHeightChanged() { vessel.refresh() }
         }
 
+        SequentialAnimation {
+            id: swap
+            NumberAnimation { target: vessel; property: "opacity"; to: 0; duration: 400 }
+            ScriptAction { script: vessel.route = vessel.pending }
+            NumberAnimation { target: vessel; property: "opacity"; to: 1; duration: 400 }
+        }
+
+        // 1 right after a click on the boat, back to 0 in two seconds: it rocks.
+        property real rock: 0
+        function tap() {
+            rocking.restart();
+        }
+        NumberAnimation { id: rocking; target: vessel; property: "rock"; from: 1; to: 0; duration: 2000; easing.type: Easing.OutQuad }
+
         z: 3
-        visible: theme.showKayak && pos !== null
+        visible: shown && pos !== null
         x: pos ? pos.x : 0
         y: pos ? pos.y : 0
-        // 1 right after a click on the kayak, back to 0 in two seconds: it rocks.
-        property real rock: 0
-        NumberAnimation { id: rocking; target: kayak; property: "rock"; from: 1; to: 0; duration: 2000; easing.type: Easing.OutQuad }
-        heading: (pos ? pos.angle : 0) + 4 * Math.sin(theme.env.time * 0.5) + 26 * rock * Math.sin(rock * 20)
+        heading: (pos ? pos.angle : 0) + sway * Math.sin(theme.env.time * 0.5) + rockBy * rock * Math.sin(rock * 20)
+    }
+
+    // One kayak paddles across, 16 routes per time wrap (236 s each).
+    Vessel {
+        id: kayak
+        seed: 17
+        shown: theme.showKayak
         source: Qt.resolvedUrl("kayak.svg")
         shadowSource: Qt.resolvedUrl("kayak-shadow.svg")
         spriteWidth: 64
         spriteHeight: 24
         sourceSize: Qt.size(64, 24)
         altitude: 10
+        shadowOpacity: 0.2
+    }
+
+    // One ship sails across every 188 s (20 routes per time wrap), in view for the first 132 s.
+    // Which ship it is depends on the crossing and on the "ships" setting (see Beach.ship).
+    Vessel {
+        id: ship
+        readonly property var art: Beach.ship(theme.settings.ships ?? 3, n)
+        seed: 23
+        crossings: 20
+        phase: 0.45
+        share: 0.7
+        margin: 110
+        sway: 1.5
+        rockBy: 7
+        shown: art !== null
+        source: art ? Qt.resolvedUrl(art.name + ".svg") : ""
+        shadowSource: art ? Qt.resolvedUrl(art.name + "-shadow.svg") : ""
+        spriteWidth: art ? art.w : 0
+        spriteHeight: art ? art.h : 0
+        sourceSize: Qt.size(2 * spriteWidth, 2 * spriteHeight)
+        altitude: 14
         shadowOpacity: 0.2
     }
 
