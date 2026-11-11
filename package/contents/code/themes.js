@@ -33,6 +33,17 @@ var list = [
         ]
     },
     {
+        id: "forest",
+        name: "Forest",
+        settings: [
+            { key: "palette", type: "choice", label: "Palette:", choices: ["Summer", "Autumn", "Winter"], def: 0 },
+            { key: "density", type: "int", label: "Tree density:", min: 1, max: 10, step: 1, def: 8 },
+            { key: "sway", type: "bool", label: "Trees sway in the wind", def: true },
+            { key: "sparrows", type: "bool", label: "Sparrows", def: true },
+            { key: "timeOfDay", type: "bool", label: "Tint by time of day", def: false }
+        ]
+    },
+    {
         id: "cosmos",
         name: "Cosmos",
         settings: [

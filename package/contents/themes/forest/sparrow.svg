@@ -1,0 +1,13 @@
+<!-- SPDX-FileCopyrightText: 2026 himanishpuri <himanishpuri2203@gmail.com> SPDX-License-Identifier: GPL-3.0-or-later -->
+<svg xmlns="http://www.w3.org/2000/svg" width="40" height="32" viewBox="0 0 40 32">
+  <g stroke="#4a3424" stroke-width="0.6" stroke-linejoin="round">
+    <path d="M22 14 Q26 8 23 4 Q19 1 13 2 Q17 6 17 10 Q17 12 16 14 Z" fill="#8a6240"/>
+    <path d="M22 18 Q26 24 23 28 Q19 31 13 30 Q17 26 17 22 Q17 20 16 18 Z" fill="#8a6240"/>
+    <path d="M13 16 L5 12.5 L7 16 L5 19.5 Z" fill="#6e4c30"/>
+    <ellipse cx="19" cy="16" rx="8" ry="3.8" fill="#a9825a"/>
+    <circle cx="28" cy="16" r="3.4" fill="#7a5230"/>
+  </g>
+  <path d="M17 7 Q19 9 20 12 M17 25 Q19 23 20 20" stroke="#f0e2c8" stroke-width="1" fill="none" stroke-linecap="round"/>
+  <ellipse cx="27" cy="16" rx="1.6" ry="2.6" fill="#d9c4a0"/>
+  <path d="M31 16 L34 16" stroke="#3a2a1a" stroke-width="1.6" stroke-linecap="round"/>
+</svg>
