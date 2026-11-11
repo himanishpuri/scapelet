@@ -77,13 +77,13 @@ ShaderEffect {
     SequentialAnimation {
         id: grow
         PauseAnimation { duration: blob.appearDelay }
-        NumberAnimation { target: blob; property: "growth"; to: 1; duration: blob.morphDuration; easing.type: Easing.InOutCubic }
+        NumberAnimation { target: blob; property: "growth"; to: 1; duration: blob.morphDuration; easing.type: Easing.InOutSine }
     }
 
     SequentialAnimation {
         id: shrink
         PauseAnimation { duration: blob.disappearDelay }
-        NumberAnimation { target: blob; property: "growth"; to: 0; duration: blob.morphDuration; easing.type: Easing.InOutCubic }
+        NumberAnimation { target: blob; property: "growth"; to: 0; duration: blob.morphDuration; easing.type: Easing.InOutSine }
         ScriptAction { script: blob.expired(blob.key) }
     }
 }
