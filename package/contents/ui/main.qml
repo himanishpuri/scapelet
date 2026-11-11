@@ -14,7 +14,7 @@ WallpaperItem {
 
     PlasmaCore.Action {
         id: exportAction
-        text: i18n("Save Picture Without Icon Names")
+        text: "Save Picture Without Icon Names"
         icon.name: "document-save-as"
         onTriggered: root.exportPicture()
     }

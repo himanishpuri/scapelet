@@ -31,11 +31,11 @@ theme up from the registry.
 ```js
 {
     id: "forest",                 // directory name under themes/
-    name: N_("Forest"),           // shown in the Theme combo box
+    name: "Forest",               // shown in the Theme combo box
     settings: [
-        { key: "mushrooms", type: "bool", label: N_("Mushrooms"), def: true },
-        { key: "density", type: "int", label: N_("Tree density:"), min: 1, max: 10, step: 1, def: 5 },
-        { key: "season", type: "choice", label: N_("Season:"), choices: [N_("Spring"), N_("Autumn")], def: 0 }
+        { key: "mushrooms", type: "bool", label: "Mushrooms", def: true },
+        { key: "density", type: "int", label: "Tree density:", min: 1, max: 10, step: 1, def: 5 },
+        { key: "season", type: "choice", label: "Season:", choices: ["Spring", "Autumn"], def: 0 }
     ]
 }
 ```
@@ -49,8 +49,8 @@ Setting types:
 | `choice` | `choices`, `def` | index into `choices` |
 
 Values are stored as JSON in the `ThemeSettings` config entry. Invalid or
-missing values fall back to `def`. Wrap every label in `N_()`; the settings
-page passes it through `i18n()`.
+missing values fall back to `def`. Labels are plain English strings; Scapelet
+is not translated.
 
 ## ThemeBase
 

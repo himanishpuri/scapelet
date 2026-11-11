@@ -2,54 +2,49 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 .pragma library
 
-// Marks a user-visible string. It is passed through i18n() where it is shown.
-function N_(s) {
-    return s;
-}
-
 // One entry per theme; the theme itself is themes/<id>/Main.qml.
 // Setting types: "int" (min, max, step), "bool", "choice" (choices; the value is the index).
 var list = [
     {
         id: "beach",
-        name: N_("Beach"),
+        name: "Beach",
         settings: [
-            { key: "palette", type: "choice", label: N_("Palette:"), choices: [N_("Tropical"), N_("Sunset"), N_("Night")], def: 0 },
-            { key: "coastWarp", type: "int", label: N_("Coastline irregularity (px):"), min: 0, max: 80, step: 5, def: 30 },
-            { key: "palms", type: "bool", label: N_("Palm trees"), def: true },
-            { key: "kayak", type: "bool", label: N_("Kayak"), def: true },
-            { key: "birds", type: "bool", label: N_("Seabirds"), def: true },
-            { key: "timeOfDay", type: "bool", label: N_("Tint by time of day"), def: false },
-            { key: "strip", type: "choice", label: N_("Permanent beach:"), choices: [N_("None"), N_("Left"), N_("Right"), N_("Top"), N_("Bottom")], def: 0 },
-            { key: "stripWidth", type: "int", label: N_("Permanent beach width (px):"), min: 60, max: 400, step: 20, def: 160 }
+            { key: "palette", type: "choice", label: "Palette:", choices: ["Tropical", "Sunset", "Night"], def: 0 },
+            { key: "coastWarp", type: "int", label: "Coastline irregularity (px):", min: 0, max: 80, step: 5, def: 30 },
+            { key: "palms", type: "bool", label: "Palm trees", def: true },
+            { key: "kayak", type: "bool", label: "Kayak", def: true },
+            { key: "birds", type: "bool", label: "Seabirds", def: true },
+            { key: "timeOfDay", type: "bool", label: "Tint by time of day", def: false },
+            { key: "strip", type: "choice", label: "Permanent beach:", choices: ["None", "Left", "Right", "Top", "Bottom"], def: 0 },
+            { key: "stripWidth", type: "int", label: "Permanent beach width (px):", min: 60, max: 400, step: 20, def: 160 }
         ]
     },
     {
         id: "meadow",
-        name: N_("Meadow"),
+        name: "Meadow",
         settings: [
-            { key: "palette", type: "choice", label: N_("Palette:"), choices: [N_("Spring"), N_("Summer"), N_("Dusk")], def: 0 },
-            { key: "fluff", type: "int", label: N_("Cloud fluffiness (px):"), min: 0, max: 40, step: 4, def: 20 },
-            { key: "shadows", type: "bool", label: N_("Cloud shadows"), def: true },
-            { key: "butterflies", type: "bool", label: N_("Butterflies"), def: true },
-            { key: "timeOfDay", type: "bool", label: N_("Tint by time of day"), def: false }
+            { key: "palette", type: "choice", label: "Palette:", choices: ["Spring", "Summer", "Dusk"], def: 0 },
+            { key: "fluff", type: "int", label: "Cloud fluffiness (px):", min: 0, max: 40, step: 4, def: 20 },
+            { key: "shadows", type: "bool", label: "Cloud shadows", def: true },
+            { key: "butterflies", type: "bool", label: "Butterflies", def: true },
+            { key: "timeOfDay", type: "bool", label: "Tint by time of day", def: false }
         ]
     },
     {
         id: "cosmos",
-        name: N_("Cosmos"),
+        name: "Cosmos",
         settings: [
-            { key: "palette", type: "choice", label: N_("Palette:"), choices: [N_("Violet"), N_("Teal"), N_("Ember")], def: 0 },
-            { key: "density", type: "int", label: N_("Star density:"), min: 1, max: 10, step: 1, def: 5 },
-            { key: "lines", type: "bool", label: N_("Constellation lines"), def: true },
-            { key: "shooting", type: "bool", label: N_("Shooting stars"), def: true }
+            { key: "palette", type: "choice", label: "Palette:", choices: ["Violet", "Teal", "Ember"], def: 0 },
+            { key: "density", type: "int", label: "Star density:", min: 1, max: 10, step: 1, def: 5 },
+            { key: "lines", type: "bool", label: "Constellation lines", def: true },
+            { key: "shooting", type: "bool", label: "Shooting stars", def: true }
         ]
     },
     {
         id: "blueprint",
-        name: N_("Blueprint"),
+        name: "Blueprint",
         settings: [
-            { key: "grid", type: "int", label: N_("Grid spacing (px):"), min: 20, max: 120, step: 10, def: 40 }
+            { key: "grid", type: "int", label: "Grid spacing (px):", min: 20, max: 120, step: 10, def: 40 }
         ]
     }
 ];

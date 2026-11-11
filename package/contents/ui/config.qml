@@ -38,8 +38,8 @@ Kirigami.FormLayout {
 
     QQC2.ComboBox {
         id: themeBox
-        Kirigami.FormData.label: i18n("Theme:")
-        model: Themes.list.map(t => i18n(t.name))
+        Kirigami.FormData.label: "Theme:"
+        model: Themes.list.map(t => t.name)
         currentIndex: Math.max(0, Themes.list.findIndex(t => t.id === root.cfg_Theme))
         onActivated: index => root.cfg_Theme = Themes.list[index].id
     }
@@ -50,7 +50,7 @@ Kirigami.FormLayout {
             id: row
             required property var modelData
             readonly property var value: root.themeValues[modelData.key]
-            Kirigami.FormData.label: modelData.type === "bool" ? "" : i18n(modelData.label)
+            Kirigami.FormData.label: modelData.type === "bool" ? "" : modelData.label
 
             QQC2.SpinBox {
                 visible: row.modelData.type === "int"
@@ -62,13 +62,13 @@ Kirigami.FormLayout {
             }
             QQC2.CheckBox {
                 visible: row.modelData.type === "bool"
-                text: i18n(row.modelData.label)
+                text: row.modelData.label
                 checked: row.modelData.type === "bool" && row.value === true
                 onToggled: root.setThemeValue(row.modelData.key, checked)
             }
             QQC2.ComboBox {
                 visible: row.modelData.type === "choice"
-                model: (row.modelData.choices ?? []).map(c => i18n(c))
+                model: row.modelData.choices ?? []
                 currentIndex: row.modelData.type === "choice" ? row.value : 0
                 onActivated: index => root.setThemeValue(row.modelData.key, index)
             }
@@ -79,7 +79,7 @@ Kirigami.FormLayout {
 
     QQC2.SpinBox {
         id: influenceRadius
-        Kirigami.FormData.label: i18n("Area around each icon (px):")
+        Kirigami.FormData.label: "Area around each icon (px):"
         from: 40
         to: 150
         stepSize: 5
@@ -87,7 +87,7 @@ Kirigami.FormLayout {
 
     QQC2.SpinBox {
         id: appearDelay
-        Kirigami.FormData.label: i18n("Island appears after (ms):")
+        Kirigami.FormData.label: "Island appears after (ms):"
         from: 0
         to: 10000
         stepSize: 250
@@ -95,7 +95,7 @@ Kirigami.FormLayout {
 
     QQC2.SpinBox {
         id: disappearDelay
-        Kirigami.FormData.label: i18n("Island sinks after (ms):")
+        Kirigami.FormData.label: "Island sinks after (ms):"
         from: 0
         to: 10000
         stepSize: 250
@@ -103,7 +103,7 @@ Kirigami.FormLayout {
 
     QQC2.SpinBox {
         id: morphDuration
-        Kirigami.FormData.label: i18n("Grow/sink duration (ms):")
+        Kirigami.FormData.label: "Grow/sink duration (ms):"
         from: 200
         to: 5000
         stepSize: 100
@@ -111,17 +111,17 @@ Kirigami.FormLayout {
 
     QQC2.CheckBox {
         id: animate
-        text: i18n("Animate")
+        text: "Animate"
     }
 
     QQC2.CheckBox {
         id: includeWidgets
-        text: i18n("Grow land around desktop widgets")
+        text: "Grow land around desktop widgets"
     }
 
     QQC2.SpinBox {
         id: fps
-        Kirigami.FormData.label: i18n("Frame rate limit (fps):")
+        Kirigami.FormData.label: "Frame rate limit (fps):"
         from: 5
         to: 60
         stepSize: 5
@@ -129,7 +129,7 @@ Kirigami.FormLayout {
 
     QQC2.SpinBox {
         id: renderScale
-        Kirigami.FormData.label: i18n("Render scale (%):")
+        Kirigami.FormData.label: "Render scale (%):"
         from: 50
         to: 100
         stepSize: 25
@@ -137,17 +137,17 @@ Kirigami.FormLayout {
 
     QQC2.ComboBox {
         id: pauseMode
-        Kirigami.FormData.label: i18n("Pause animation:")
-        model: [i18n("Never"), i18n("Under a maximized or full-screen window"), i18n("Under any window that covers most of the screen")]
+        Kirigami.FormData.label: "Pause animation:"
+        model: ["Never", "Under a maximized or full-screen window", "Under any window that covers most of the screen"]
     }
 
     QQC2.CheckBox {
         id: batterySaver
-        text: i18n("Save power on battery and in power-saver mode (15 fps, 75 % scale)")
+        text: "Save power on battery and in power-saver mode (15 fps, 75 % scale)"
     }
 
     QQC2.CheckBox {
         id: debugLog
-        text: i18n("Log icon tracking to the journal")
+        text: "Log icon tracking to the journal"
     }
 }
