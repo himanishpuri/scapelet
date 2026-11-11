@@ -25,6 +25,17 @@ var list = [
         ]
     },
     {
+        id: "meadow",
+        name: N_("Meadow"),
+        settings: [
+            { key: "palette", type: "choice", label: N_("Palette:"), choices: [N_("Spring"), N_("Summer"), N_("Dusk")], def: 0 },
+            { key: "fluff", type: "int", label: N_("Cloud fluffiness (px):"), min: 0, max: 40, step: 4, def: 20 },
+            { key: "shadows", type: "bool", label: N_("Cloud shadows"), def: true },
+            { key: "butterflies", type: "bool", label: N_("Butterflies"), def: true },
+            { key: "timeOfDay", type: "bool", label: N_("Tint by time of day"), def: false }
+        ]
+    },
+    {
         id: "blueprint",
         name: N_("Blueprint"),
         settings: [

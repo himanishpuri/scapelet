@@ -45,4 +45,14 @@ TestCase {
         compare(Themes.resolve("beach", both).palette, 2);
         compare(Themes.resolve("blueprint", both).grid, 80);
     }
+
+    function test_meadow_defaults() {
+        compare(Themes.find("meadow").id, "meadow");
+        const v = Themes.resolve("meadow", '{"meadow":{"fluff":41}}');
+        compare(v.palette, 0);
+        compare(v.fluff, 20);
+        compare(v.shadows, true);
+        compare(v.butterflies, true);
+        compare(v.timeOfDay, false);
+    }
 }

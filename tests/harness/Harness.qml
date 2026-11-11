@@ -11,7 +11,7 @@ import "../../package/contents/code/themes.js" as Themes
 //   qml-qt6 tests/harness/Harness.qml [-- --snapshot /abs/path.png | --export /abs/path.png] [--maximized] [--paused]
 //       [--theme <id>] [--settings '<json>'] [--hour <0..24>] [--script events] [--stats]
 // Keys: A add icon, D remove last icon, Space toggle animation, T next theme,
-//       W toggle a fake widget, H cycle the hour (wall clock, 6, 12, 19, 0), P next Beach palette.
+//       W toggle a fake widget, H cycle the hour (wall clock, 6, 12, 19, 0), P next palette.
 Window {
     id: win
 
@@ -246,8 +246,10 @@ Window {
                 win.publish();
                 event.accepted = true;
             } else if (event.key === Qt.Key_P) {
-                if (engine.themeId === "beach") {
-                    engine.themeSettingsJson = Themes.store(engine.themeSettingsJson, "beach", "palette", (engine.themeSettings.palette + 1) % 3);
+                const spec = Themes.find(engine.themeId).settings.find(s => s.key === "palette");
+                if (spec) {
+                    engine.themeSettingsJson = Themes.store(engine.themeSettingsJson, engine.themeId, "palette",
+                                                            (engine.themeSettings.palette + 1) % spec.choices.length);
                 }
                 event.accepted = true;
             } else if (event.key === Qt.Key_H) {
