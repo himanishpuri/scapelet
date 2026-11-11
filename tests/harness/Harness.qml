@@ -9,7 +9,7 @@ import "../../package/contents/code/themes.js" as Themes
 
 // Standalone renderer harness with draggable fake icons.
 //   qml-qt6 tests/harness/Harness.qml [-- --snapshot /abs/path.png | --export /abs/path.png] [--maximized] [--paused]
-//       [--theme <id>] [--settings '<json>'] [--hour <0..24>] [--script events] [--stats]
+//       [--theme <id>] [--settings '<json>'] [--hour <0..24>] [--time <s>] [--script events] [--stats]
 // Keys: A add icon, D remove last icon, Space toggle animation, T next theme,
 //       W toggle a fake widget, H cycle the hour (wall clock, 6, 12, 19, 0), P next palette.
 Window {
@@ -103,6 +103,7 @@ Window {
             win.visibility = Window.Maximized;
         }
         publish();
+        engine.time = Number(arg("--time", "0"));
         if (snapshotMode || exportPath !== "") {
             snapshotTimer.start();
         } else {
