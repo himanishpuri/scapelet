@@ -18,7 +18,7 @@
 |---|---|
 | `make test` | unit tests (`tests/unit`) |
 | `make scenario` | runs the four core events in the harness and compares them with `tests/harness/events.expected` |
-| `make lint` | `qmllint` over all QML; warnings about Plasma-supplied names are expected |
+| `make lint` | `qmllint` over all QML; fails on any warning. Plasma-internal names carry a `// qmllint disable` comment |
 | `make snapshot` | renders the harness to `build/harness.png` |
 | `make harness` | interactive harness with draggable fake icons |
 | `make stats` | harness with ticks, presented frames and CPU share once a second (`ARGS=--paused` to check that a paused engine draws nothing) |

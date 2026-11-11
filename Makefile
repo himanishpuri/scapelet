@@ -67,7 +67,7 @@ test:
 	QT_QPA_PLATFORM=offscreen qmltestrunner-qt6 -input tests/unit
 
 lint:
-	-qmllint-qt6 $(PKG)/contents/ui/*.qml $(PKG)/contents/engine/*.qml $(PKG)/contents/themes/*/*.qml tests/harness/*.qml tests/unit/*.qml
+	qmllint-qt6 --max-warnings 0 $(PKG)/contents/ui/*.qml $(PKG)/contents/engine/*.qml $(PKG)/contents/themes/*/*.qml tests/harness/*.qml tests/unit/*.qml
 
 dist: shaders
 	mkdir -p dist

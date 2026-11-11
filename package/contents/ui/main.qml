@@ -62,7 +62,7 @@ WallpaperItem {
     }
 
     // True on a desktop containment; false in the lock screen greeter.
-    readonly property bool onDesktop: root.parent !== null && root.parent.appletsLayout !== undefined
+    readonly property bool onDesktop: root.parent !== null && root.parent.appletsLayout !== undefined // qmllint disable missing-property
 
     // Loaded through a Loader so a missing org.kde.taskmanager module only disables pausing.
     Loader {
@@ -82,16 +82,16 @@ WallpaperItem {
         onLoaded: item.debug = Qt.binding(() => root.configuration.DebugLog)
     }
 
-    readonly property bool locked: root.onDesktop && powerLoader.status === Loader.Ready && powerLoader.item.locked
+    readonly property bool locked: root.onDesktop && powerLoader.status === Loader.Ready && powerLoader.item.locked // qmllint disable missing-property
     readonly property bool saver: root.configuration.BatterySaver && powerLoader.status === Loader.Ready
-                                  && (powerLoader.item.onBattery || powerLoader.item.profile === "power-saver")
+                                  && (powerLoader.item.onBattery || powerLoader.item.profile === "power-saver") // qmllint disable missing-property
     onSaverChanged: {
         if (root.configuration.DebugLog) {
             console.info("scapelet: saver=" + saver);
         }
     }
 
-    readonly property bool covered: pauseLoader.status === Loader.Ready && pauseLoader.item.covered
+    readonly property bool covered: pauseLoader.status === Loader.Ready && pauseLoader.item.covered // qmllint disable missing-property
     onCoveredChanged: {
         if (root.configuration.DebugLog) {
             console.info("scapelet: covered=" + covered);

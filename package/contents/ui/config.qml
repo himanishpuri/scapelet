@@ -10,7 +10,7 @@ import "../code/themes.js" as Themes
 
 Kirigami.FormLayout {
     id: root
-    twinFormLayouts: parentLayout
+    twinFormLayouts: parentLayout // qmllint disable unqualified
 
     property alias formLayout: root
 

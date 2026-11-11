@@ -17,7 +17,7 @@ Item {
     property string pending: ""
     property string signature: "[]"
 
-    readonly property var layout: (host && host.parent) ? (host.parent.appletsLayout ?? null) : null
+    readonly property var layout: (host && host.parent) ? (host.parent.appletsLayout ?? null) : null // qmllint disable missing-property
 
     function scan() {
         const out = [];

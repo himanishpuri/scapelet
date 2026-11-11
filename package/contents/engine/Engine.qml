@@ -44,7 +44,7 @@ Item {
     readonly property int frameCount: ticker.frames
     readonly property string themeId: Themes.find(theme).id
     readonly property var themeSettings: Themes.resolve(themeId, themeSettingsJson)
-    readonly property Item themeItem: themeLoader.item
+    readonly property ThemeBase themeItem: themeLoader.item as ThemeBase
     readonly property color accentColor: themeItem ? themeItem.accentColor : "transparent"
 
     onInputChanged: update()
@@ -66,7 +66,7 @@ Item {
         engine.sources = all;
         engine.clusters = next;
         engine.spots = World.decorSpots(present, next, 1.2 * engine.influenceRadius);
-        const t = themeLoader.item;
+        const t = engine.themeItem;
         if (!t || !engine.animateChanges) {
             return;
         }

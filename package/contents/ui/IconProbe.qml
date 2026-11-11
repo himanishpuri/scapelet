@@ -20,7 +20,7 @@ Item {
     property bool available: false
     property string signature: "?"
 
-    readonly property var folderLayer: (host && host.parent) ? (host.parent.folderViewLayer ?? null) : null
+    readonly property var folderLayer: (host && host.parent) ? (host.parent.folderViewLayer ?? null) : null // qmllint disable missing-property
     readonly property var folderView: folderLayer ? (folderLayer.view ?? null) : null
     readonly property var grid: folderView ? (folderView.view ?? null) : null
     readonly property var gridModel: grid ? (grid.model ?? null) : null
