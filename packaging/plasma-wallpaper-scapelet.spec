@@ -3,7 +3,7 @@
 %global plugin_id io.github.himanishpuri.scapelet
 
 Name:           plasma-wallpaper-scapelet
-Version:        0.4.1
+Version:        0.5.0
 Release:        1%{?dist}
 Summary:        Plasma wallpaper that grows a landscape around your desktop icons
 License:        GPL-3.0-or-later
@@ -38,6 +38,14 @@ cp -a package/. %{buildroot}%{_datadir}/plasma/wallpapers/%{plugin_id}/
 %{_datadir}/plasma/wallpapers/%{plugin_id}/
 
 %changelog
+* Wed Nov 11 2026 himanishpuri <himanishpuri2203@gmail.com> - 0.5.0-1
+- New theme: Forest, a paper-cut forest that opens a clearing around the icons
+- Areas grow outward from their icon and ease in and out instead of popping
+- Meadow: puff clouds with cast shadows, drifting clouds, one to three butterflies
+- Cosmos: Milky Way, coloured stars with glow, filament nebula, slow drift
+- Beach: kayak and gulls follow curved routes and cast shadows
+- Shared settings are labelled in the words of each theme
+
 * Wed Nov 11 2026 himanishpuri <himanishpuri2203@gmail.com> - 0.4.1-1
 - Require Plasma 6.3 in the plugin metadata
 - Settings text is plain English; i18n() calls removed

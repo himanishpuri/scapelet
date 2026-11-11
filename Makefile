@@ -1,7 +1,7 @@
 # SPDX-FileCopyrightText: 2026 himanishpuri <himanishpuri2203@gmail.com>
 # SPDX-License-Identifier: GPL-3.0-or-later
 ID      := io.github.himanishpuri.scapelet
-VERSION := 0.4.1
+VERSION := 0.5.0
 QSB     ?= qsb-qt6
 PKG     := package
 DEST    := $(HOME)/.local/share/plasma/wallpapers/$(ID)
