@@ -209,24 +209,6 @@ function decorSpots(list, clusterList, near) {
     return out;
 }
 
-// y of the horizontal line (rows candidates across height) farthest from every source,
-// or -1 when no candidate is more than min px clear.
-function clearLane(list, height, rows, min) {
-    var best = -1, bestGap = min;
-    for (var r = 0; r < rows; ++r) {
-        var y = (r + 0.5) * height / rows, gap = Infinity;
-        for (var i = 0; i < list.length; ++i) {
-            var s = list[i];
-            gap = Math.min(gap, y < s.y ? s.y - y : (y > s.y + s.h ? y - s.y - s.h : 0));
-        }
-        if (gap > bestGap) {
-            bestGap = gap;
-            best = y;
-        }
-    }
-    return best;
-}
-
 // Share (0..1) of screen covered by win; both are { x, y, width, height }.
 function coverage(win, screen) {
     if (!win || !screen || screen.width <= 0 || screen.height <= 0) {

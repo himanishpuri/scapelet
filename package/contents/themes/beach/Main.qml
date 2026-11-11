@@ -5,7 +5,7 @@ pragma ComponentBehavior: Bound
 import QtQuick
 import "../../engine"
 import "beach.js" as Beach
-import "../../code/world.js" as World
+import "../../code/paths.js" as Paths
 
 // Beach: icons are sandy islands in a tropical sea.
 // added -> sand appears, grouped -> island expands, removed -> water returns, moved -> coastline changes.
@@ -46,16 +46,26 @@ ThemeBase {
     readonly property bool showBirds: theme.settings.birds ?? true
     readonly property int stripSide: theme.settings.strip ?? 0
     readonly property real stripWidth: stripSide > 0 ? (theme.settings.stripWidth ?? 160) : 0
-    // Icons, widgets and a top or bottom beach: what the kayak's lane must stay clear of.
+    // Icons, widgets and the permanent beach: what the kayak must stay clear of.
     readonly property var obstacles: {
         const list = theme.env.sources.slice();
-        if (stripSide === 3) {
+        if (stripSide === 1) {
+            list.push({ x: 0, y: 0, w: stripWidth, h: theme.height });
+        } else if (stripSide === 2) {
+            list.push({ x: theme.width - stripWidth, y: 0, w: stripWidth, h: theme.height });
+        } else if (stripSide === 3) {
             list.push({ x: 0, y: 0, w: theme.width, h: stripWidth });
         } else if (stripSide === 4) {
             list.push({ x: 0, y: theme.height - stripWidth, w: theme.width, h: stripWidth });
         }
         return list;
     }
+    // px of open water the kayak keeps between itself and every obstacle.
+    readonly property real clearance: 0.6 * theme.env.influenceRadius + (theme.settings.coastWarp ?? 30) + 16
+    onObstaclesChanged: kayak.refresh()
+    onClearanceChanged: kayak.refresh()
+    onWidthChanged: kayak.refresh()
+    onHeightChanged: kayak.refresh()
 
     // Transitions: rings of foam where the coast is about to change.
     Component {
@@ -164,20 +174,53 @@ ThemeBase {
         }
     }
 
-    // One kayak crossing open water. All motion derives from env.time: it stops when the engine pauses,
-    // and every rate is a whole number of cycles per time wrap, so nothing jumps at the wrap.
-    Image {
+    // One kayak paddles a curved route from one screen edge to another, 16 routes per time wrap (236 s each).
+    // All motion derives from env.time: it stops when the engine pauses, and nothing jumps at the wrap.
+    // A route is kept until its crossing ends; when an icon blocks it, the kayak fades out and
+    // comes back on a clear route.
+    ShadowSprite {
         id: kayak
-        readonly property real lane: World.clearLane(theme.obstacles, theme.height, 12, 2.5 * theme.env.influenceRadius)
-        readonly property real from: theme.stripSide === 1 ? theme.stripWidth + 40 : -80
-        readonly property real to: theme.stripSide === 2 ? theme.width - theme.stripWidth - 40 : theme.width + 80
+        readonly property real cycle: theme.env.time * 16 / 3769.911184
+        readonly property int n: Math.floor(cycle)
+        property var route: null
+        property var pending: null
+        property int routeN: -1
+        readonly property var pos: route ? Paths.at(route, cycle % 1) : null
+
+        function refresh() {
+            const next = Paths.pick(17, n, theme.width, theme.height, 80, theme.obstacles, theme.clearance, 40);
+            if (n !== routeN || !theme.env.animateChanges) {
+                swap.stop();
+                opacity = 1;
+                route = next;
+                routeN = n;
+            } else if ((next ? next.k : -1) !== (route ? route.k : -1)) {
+                pending = next;
+                swap.restart();
+            }
+        }
+        onNChanged: refresh()
+        Component.onCompleted: refresh()
+
+        SequentialAnimation {
+            id: swap
+            NumberAnimation { target: kayak; property: "opacity"; to: 0; duration: 400 }
+            ScriptAction { script: kayak.route = kayak.pending }
+            NumberAnimation { target: kayak; property: "opacity"; to: 1; duration: 400 }
+        }
+
         z: 3
-        visible: theme.showKayak && lane >= 0
+        visible: theme.showKayak && pos !== null
+        x: pos ? pos.x : 0
+        y: pos ? pos.y : 0
+        heading: (pos ? pos.angle : 0) + 4 * Math.sin(theme.env.time * 0.5)
         source: Qt.resolvedUrl("kayak.svg")
+        shadowSource: Qt.resolvedUrl("kayak-shadow.svg")
+        spriteWidth: 64
+        spriteHeight: 24
         sourceSize: Qt.size(64, 24)
-        x: from + ((theme.env.time * 16 / 3769.911184) % 1) * (to - from)   // one crossing every 236 s
-        y: lane - height / 2 + 4 * Math.sin(theme.env.time * 0.8)
-        rotation: 4 * Math.sin(theme.env.time * 0.5)
+        altitude: 10
+        shadowOpacity: 0.2
     }
 
     // Gull clock: follows env.time, but advances on every displayed frame while the gulls are in
@@ -194,29 +237,36 @@ ThemeBase {
         }
     }
 
-    // Three gulls crossing every 47 s (80 per time wrap), in view for the first 40 % of each cycle.
+    // Three gulls follow one curved route every 47 s (80 per time wrap), in view for the first 40 % of each cycle.
+    // The second and third fly a little behind the first and to either side of its path.
     Item {
         id: flock
         readonly property real cycle: theme.birdTime * 80 / 3769.911184
         readonly property real p: (cycle % 1) / 0.4
+        readonly property var route: Paths.route(29, Math.floor(cycle), theme.width, theme.height, 120)
         z: 4
         visible: theme.showBirds && p <= 1
-        x: -120 + (theme.width + 240) * p
-        y: theme.height * (0.15 + 0.7 * World.hash01(Math.floor(cycle), 7)) - 60 * p
 
         Repeater {
-            model: [{ dx: 0, dy: 0 }, { dx: -36, dy: 22 }, { dx: -32, dy: -26 }]
-            delegate: Image {
+            model: [{ lag: 0, side: 0 }, { lag: 0.022, side: 26 }, { lag: 0.02, side: -26 }]
+            delegate: ShadowSprite {
                 id: bird
                 required property var modelData
                 required property int index
-                x: modelData.dx
-                y: modelData.dy
-                width: 36
-                height: 24
+                readonly property var pos: Paths.at(flock.route, flock.p - modelData.lag)
+                // 1 while the bird beats its wings, 0 while it glides.
+                readonly property real beat: Math.max(0, Math.min(1, 0.5 + 2 * Math.sin(theme.birdTime * 0.7 + index * 2.1)))
+                x: pos.x - modelData.side * Math.sin(pos.angle * Math.PI / 180)
+                y: pos.y + modelData.side * Math.cos(pos.angle * Math.PI / 180)
+                heading: pos.angle
                 source: Qt.resolvedUrl("bird.svg")
+                shadowSource: Qt.resolvedUrl("bird-shadow.svg")
+                spriteWidth: 36
+                spriteHeight: 24
                 sourceSize: Qt.size(48, 32)
-                transform: Scale { origin.y: 12; yScale: 0.75 + 0.25 * Math.sin(theme.birdTime * 9 + bird.index * 2) }
+                altitude: 60
+                shadowOpacity: 0.22
+                beatY: 1 - 0.25 * beat * (1 - Math.sin(theme.birdTime * 9 + index * 2))
             }
         }
     }

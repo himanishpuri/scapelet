@@ -195,11 +195,6 @@ TestCase {
         compare(World.decorSpots(list, World.clusters(list, 161), 84).length, 0);
     }
 
-    function test_clearLane() {
-        compare(World.clearLane([src("a", 0, 0)], 800, 8, 175), 750);
-        compare(World.clearLane([src("a", 0, 3)], 440, 4, 300), -1);
-    }
-
     function test_coverage() {
         const screen = { x: 0, y: 0, width: 1920, height: 1200 };
         compare(World.coverage({ x: 0, y: 0, width: 960, height: 1200 }, screen), 0.5);
