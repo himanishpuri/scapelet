@@ -11,7 +11,11 @@ jobs:
     env:
       QT_QPA_PLATFORM: offscreen
     steps:
-      - run: dnf -y -q --setopt=install_weak_deps=False --disablerepo=fedora-cisco-openh264 install git make qt6-qtdeclarative-devel qt6-qtshadertools
+      # The KDE packages provide the QML modules the plugin imports, so qmllint can resolve them.
+      - run: >-
+          dnf -y -q --setopt=install_weak_deps=False --disablerepo=fedora-cisco-openh264 install
+          git make qt6-qtdeclarative-devel qt6-qtshadertools
+          plasma-workspace libplasma kf6-kirigami kf6-kwindowsystem
       - uses: actions/checkout@v5
       - run: make shaders
       - run: make test
