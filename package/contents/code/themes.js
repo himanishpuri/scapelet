@@ -36,6 +36,16 @@ var list = [
         ]
     },
     {
+        id: "cosmos",
+        name: N_("Cosmos"),
+        settings: [
+            { key: "palette", type: "choice", label: N_("Palette:"), choices: [N_("Violet"), N_("Teal"), N_("Ember")], def: 0 },
+            { key: "density", type: "int", label: N_("Star density:"), min: 1, max: 10, step: 1, def: 5 },
+            { key: "lines", type: "bool", label: N_("Constellation lines"), def: true },
+            { key: "shooting", type: "bool", label: N_("Shooting stars"), def: true }
+        ]
+    },
+    {
         id: "blueprint",
         name: N_("Blueprint"),
         settings: [

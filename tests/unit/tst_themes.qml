@@ -55,4 +55,13 @@ TestCase {
         compare(v.butterflies, true);
         compare(v.timeOfDay, false);
     }
+
+    function test_cosmos_defaults() {
+        compare(Themes.list.map(t => t.id).join(","), "beach,meadow,cosmos,blueprint");
+        const v = Themes.resolve("cosmos", '{"cosmos":{"density":11}}');
+        compare(v.palette, 0);
+        compare(v.density, 5);
+        compare(v.lines, true);
+        compare(v.shooting, true);
+    }
 }
