@@ -41,7 +41,7 @@ var list = [
         terms: { appear: "Clearing opens after (ms):", disappear: "Trees return after (ms):", morph: "Clear/regrow duration (ms):", widgets: "Clear the trees around desktop widgets" },
         settings: [
             { key: "palette", type: "choice", label: "Palette:", choices: ["Summer", "Autumn", "Winter"], def: 0 },
-            { key: "density", type: "int", label: "Tree density:", min: 1, max: 10, step: 1, def: 8 },
+            { key: "density", type: "int", label: "Tree density:", min: 1, max: 15, step: 1, def: 8 },
             { key: "sway", type: "bool", label: "Trees sway in the wind", def: true },
             { key: "sparrows", type: "bool", label: "Sparrows", def: true },
             { key: "timeOfDay", type: "bool", label: "Tint by time of day", def: false }

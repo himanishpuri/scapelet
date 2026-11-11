@@ -11,6 +11,7 @@ layout(std140, binding = 0) uniform buf {
     float time;       // seconds, wraps at 3769.911184; 0 while the trees do not sway
     float cell;       // px, spacing of the tree grid
     float keep;       // 0..1, share of grid cells that hold a tree
+    float size;       // px, scale of a tree: up to 2 sizes tall and 0.8 sizes to each side; >= cell
     float sway;       // px, how far a tree top moves in the wind
     vec2 resolution;  // px, item size
     vec4 tint;        // light colour, multiplies the result
@@ -120,14 +121,18 @@ void main() {
     // The clearing is a little brighter than the forest floor.
     grass *= 1.0 + 0.05 * smoothstep(0.0, 0.5, texture(mask, qt_TexCoord0).r);
 
-    // Trees: one per grid cell, drawn front (lower on screen) to back. A tree is at most 2 cells
-    // tall and 0.8 cells to each side, so 3 columns and 3 rows can cover a pixel; the row above
+    // Trees: one per grid cell, drawn front (lower on screen) to back. A tree is at most 2 sizes
+    // tall and 0.8 sizes (plus the sway) to each side. Its root lies 0.15..0.85 into its cell, so
+    // rows up to 0.85 + 2 sizes / cell below and columns up to 0.85 + 0.8 sizes / cell aside can
+    // cover a pixel: 3 rows and 3 columns at the default spacing (cell == size). The row above
     // only adds its shadow.
     vec2 id = floor(px / cell);
     vec4 acc = vec4(0.0);      // premultiplied colour of the trees over this pixel
     float shade = 0.0;         // 0..1 ground shadow
-    for (int dj = 2; dj >= -1; --dj) {
-        for (int di = -1; di <= 1; ++di) {
+    int rows = int(floor(0.85 + 2.0 * size / cell));
+    int side = int(floor(0.85 + (0.8 * size + sway) / cell));
+    for (int dj = rows; dj >= -1; --dj) {
+        for (int di = -side; di <= side; ++di) {
             if (acc.a > 0.995) continue;
             vec2 c = id + vec2(float(di), float(dj));
             vec2 h = hash2(c);
@@ -136,8 +141,8 @@ void main() {
             vec2 root = (c + 0.15 + 0.7 * h) * cell;
             float kindSel = fract(k.x * 61.0);
             float kind = kindSel < 0.36 ? 0.0 : (kindSel < 0.58 ? 1.0 : (kindSel < 0.72 ? 2.0 : (kindSel < 0.86 ? 3.0 : 4.0)));
-            float height = cell * (1.25 + 0.75 * k.y);
-            float halfW = min(0.8, (0.46 + 0.26 * fract(k.y * 37.0)) * (kind < 0.5 ? 1.0 : (kind < 1.5 ? 1.15 : (kind < 2.5 ? 1.0 : (kind < 3.5 ? 0.95 : 1.3))))) * cell;
+            float height = size * (1.25 + 0.75 * k.y);
+            float halfW = min(0.8, (0.46 + 0.26 * fract(k.y * 37.0)) * (kind < 0.5 ? 1.0 : (kind < 1.5 ? 1.15 : (kind < 2.5 ? 1.0 : (kind < 3.5 ? 0.95 : 1.3))))) * size;
 
             // The tree shrinks into the ground where its middle is near an icon. lev is the distance to
             // the nearest icon's core in units of sigma (2: far away). A wide band of lev keeps each tree

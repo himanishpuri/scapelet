@@ -77,6 +77,7 @@ TestCase {
         compare(v.sway, true);
         compare(v.sparrows, true);
         compare(v.timeOfDay, false);
+        compare(Themes.resolve("forest", '{"forest":{"density":15}}').density, 15);
     }
 
     // Every theme names the shared settings in its own words.
