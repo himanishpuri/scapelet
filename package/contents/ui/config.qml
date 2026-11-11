@@ -87,7 +87,7 @@ Kirigami.FormLayout {
 
     QQC2.SpinBox {
         id: appearDelay
-        Kirigami.FormData.label: "Island appears after (ms):"
+        Kirigami.FormData.label: root.themeEntry.terms.appear
         from: 0
         to: 10000
         stepSize: 250
@@ -95,7 +95,7 @@ Kirigami.FormLayout {
 
     QQC2.SpinBox {
         id: disappearDelay
-        Kirigami.FormData.label: "Island sinks after (ms):"
+        Kirigami.FormData.label: root.themeEntry.terms.disappear
         from: 0
         to: 10000
         stepSize: 250
@@ -103,7 +103,7 @@ Kirigami.FormLayout {
 
     QQC2.SpinBox {
         id: morphDuration
-        Kirigami.FormData.label: "Grow/sink duration (ms):"
+        Kirigami.FormData.label: root.themeEntry.terms.morph
         from: 200
         to: 5000
         stepSize: 100
@@ -116,7 +116,7 @@ Kirigami.FormLayout {
 
     QQC2.CheckBox {
         id: includeWidgets
-        text: "Grow land around desktop widgets"
+        text: root.themeEntry.terms.widgets
     }
 
     QQC2.SpinBox {

@@ -44,7 +44,7 @@ WallpaperItem {
         debug: root.configuration.DebugLog
     }
 
-    // Icons present when the desktop loads get their islands instantly;
+    // Icons present when the desktop loads get their areas instantly;
     // changes after this timer animate with the configured delays.
     Timer {
         id: settle

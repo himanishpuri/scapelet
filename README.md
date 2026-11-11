@@ -67,10 +67,10 @@ Right-click the desktop, choose **Desktop and Wallpaper**, and set
 **Wallpaper type** to **Scapelet**. There you can:
 
 - switch themes, and change each theme's own options;
-- make the land around each icon bigger or smaller;
-- choose how quickly land appears and disappears;
+- make the area around each icon (an island, a cloud, a clearing) bigger or smaller;
+- choose how quickly that area appears and disappears;
 - turn the palm trees, kayak and seabirds on or off one by one;
-- choose whether land also grows around desktop widgets.
+- choose whether desktop widgets get an area of their own too.
 
 ## Kind to your battery
 

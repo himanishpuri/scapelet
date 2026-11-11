@@ -4,10 +4,12 @@
 
 // One entry per theme; the theme itself is themes/<id>/Main.qml.
 // Setting types: "int" (min, max, step), "bool", "choice" (choices; the value is the index).
+// terms: labels of the shared settings, in the words of the theme (an island, a cloud, a clearing...).
 var list = [
     {
         id: "beach",
         name: "Beach",
+        terms: { appear: "Island appears after (ms):", disappear: "Island sinks after (ms):", morph: "Grow/sink duration (ms):", widgets: "Grow land around desktop widgets" },
         settings: [
             { key: "palette", type: "choice", label: "Palette:", choices: ["Tropical", "Sunset", "Night"], def: 0 },
             { key: "coastWarp", type: "int", label: "Coastline irregularity (px):", min: 0, max: 80, step: 5, def: 30 },
@@ -22,6 +24,7 @@ var list = [
     {
         id: "meadow",
         name: "Meadow",
+        terms: { appear: "Cloud gathers after (ms):", disappear: "Cloud drifts off after (ms):", morph: "Gather/drift-off duration (ms):", widgets: "Gather clouds under desktop widgets" },
         settings: [
             { key: "palette", type: "choice", label: "Palette:", choices: ["Spring", "Summer", "Dusk"], def: 0 },
             { key: "fluff", type: "int", label: "Cloud fluffiness (px):", min: 0, max: 40, step: 4, def: 20 },
@@ -35,6 +38,7 @@ var list = [
     {
         id: "forest",
         name: "Forest",
+        terms: { appear: "Clearing opens after (ms):", disappear: "Trees return after (ms):", morph: "Clear/regrow duration (ms):", widgets: "Clear the trees around desktop widgets" },
         settings: [
             { key: "palette", type: "choice", label: "Palette:", choices: ["Summer", "Autumn", "Winter"], def: 0 },
             { key: "density", type: "int", label: "Tree density:", min: 1, max: 10, step: 1, def: 8 },
@@ -46,6 +50,7 @@ var list = [
     {
         id: "cosmos",
         name: "Cosmos",
+        terms: { appear: "Nebula appears after (ms):", disappear: "Nebula fades after (ms):", morph: "Glow/fade duration (ms):", widgets: "Wrap desktop widgets in nebulae" },
         settings: [
             { key: "palette", type: "choice", label: "Palette:", choices: ["Violet", "Teal", "Ember"], def: 0 },
             { key: "density", type: "int", label: "Star density:", min: 1, max: 10, step: 1, def: 5 },
@@ -58,6 +63,7 @@ var list = [
     {
         id: "blueprint",
         name: "Blueprint",
+        terms: { appear: "Area appears after (ms):", disappear: "Area clears after (ms):", morph: "Grow/shrink duration (ms):", widgets: "Draw areas around desktop widgets" },
         settings: [
             { key: "grid", type: "int", label: "Grid spacing (px):", min: 20, max: 120, step: 10, def: 40 }
         ]

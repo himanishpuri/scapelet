@@ -78,4 +78,14 @@ TestCase {
         compare(v.sparrows, true);
         compare(v.timeOfDay, false);
     }
+
+    // Every theme names the shared settings in its own words.
+    function test_terms() {
+        for (const t of Themes.list) {
+            for (const k of ["appear", "disappear", "morph", "widgets"]) {
+                verify(typeof t.terms[k] === "string" && t.terms[k].length > 0, t.id + "." + k);
+            }
+        }
+        verify(Themes.find("forest").terms.appear.indexOf("Island") < 0);
+    }
 }

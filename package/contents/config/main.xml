@@ -25,19 +25,19 @@
       <max>150</max>
     </entry>
     <entry name="AppearDelay" type="Int">
-      <label>Delay before a new island starts growing, in milliseconds</label>
+      <label>Delay before a new area (island, cloud, clearing...) starts growing, in milliseconds</label>
       <default>2000</default>
       <min>0</min>
       <max>10000</max>
     </entry>
     <entry name="DisappearDelay" type="Int">
-      <label>Delay before an abandoned island starts sinking, in milliseconds</label>
+      <label>Delay before an abandoned area starts shrinking, in milliseconds</label>
       <default>3000</default>
       <min>0</min>
       <max>10000</max>
     </entry>
     <entry name="MorphDuration" type="Int">
-      <label>Duration of island growth and sinking, in milliseconds</label>
+      <label>Duration of an area growing or shrinking, in milliseconds</label>
       <default>1800</default>
       <min>200</min>
       <max>5000</max>
@@ -47,11 +47,11 @@
       <default>true</default>
     </entry>
     <entry name="IncludeWidgets" type="Bool">
-      <label>Grow land around desktop widgets</label>
+      <label>Grow areas around desktop widgets too</label>
       <default>true</default>
     </entry>
     <entry name="Fps" type="Int">
-      <label>Frame rate limit for the water animation</label>
+      <label>Frame rate limit for the animation</label>
       <default>30</default>
       <min>5</min>
       <max>60</max>
