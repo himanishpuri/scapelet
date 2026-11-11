@@ -4,9 +4,9 @@
 
 // Index = Cosmos setting "palette". accent is exported as the wallpaper accent colour.
 var palettes = [
-    { space: "#05060f", nebulaA: "#5b2a8c", nebulaB: "#c0489a", star: "#ffffff", line: "#c9b8ff", accent: "#7a4ab8" },   // Violet
-    { space: "#03090f", nebulaA: "#0f5f78", nebulaB: "#3fc9a8", star: "#f2fbff", line: "#a8e8ee", accent: "#1f8f9a" },   // Teal
-    { space: "#0b0606", nebulaA: "#8c2f1a", nebulaB: "#e09a3a", star: "#fff6e8", line: "#ffd9a8", accent: "#c0562a" }    // Ember
+    { space: "#05060f", nebulaA: "#5b2a8c", nebulaB: "#c0489a", core: "#ffd9f0", star: "#ffffff", line: "#c9b8ff", accent: "#7a4ab8" },   // Violet
+    { space: "#03090f", nebulaA: "#0f5f78", nebulaB: "#3fc9a8", core: "#e0fff4", star: "#f2fbff", line: "#a8e8ee", accent: "#1f8f9a" },   // Teal
+    { space: "#0b0606", nebulaA: "#8c2f1a", nebulaB: "#e09a3a", core: "#fff0c8", star: "#fff6e8", line: "#ffd9a8", accent: "#c0562a" }    // Ember
 ];
 
 // px kept clear around an anchor: half an icon picture (24) plus a margin.

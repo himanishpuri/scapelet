@@ -25,10 +25,13 @@ ThemeBase {
         property var noiseTex: theme.env.noise
         property real time: theme.env.time
         property real density: theme.settings.density ?? 5
+        property real band: (theme.settings.milkyWay ?? true) ? 1 : 0
+        property real drift: (theme.settings.drift ?? true) ? 1 : 0
         property vector2d resolution: Qt.vector2d(width, height)
         property color cSpace: theme.pal.space
         property color cNebulaA: theme.pal.nebulaA
         property color cNebulaB: theme.pal.nebulaB
+        property color cCore: theme.pal.core
         property color cStar: theme.pal.star
         fragmentShader: Qt.resolvedUrl("cosmos.frag.qsb")
         // Cached while a shooting star flies: frames between engine ticks then cost a texture copy.

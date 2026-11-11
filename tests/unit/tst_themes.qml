@@ -65,5 +65,7 @@ TestCase {
         compare(v.density, 5);
         compare(v.lines, true);
         compare(v.shooting, true);
+        compare(v.milkyWay, true);
+        compare(v.drift, true);
     }
 }

@@ -9,7 +9,7 @@ TestCase {
 
     function test_palettes_complete() {
         compare(Cosmos.palettes.length, 3);
-        const keys = ["space", "nebulaA", "nebulaB", "star", "line", "accent"];
+        const keys = ["space", "nebulaA", "nebulaB", "core", "star", "line", "accent"];
         for (const p of Cosmos.palettes) {
             for (const k of keys) {
                 verify(/^#[0-9a-f]{6}$/.test(p[k]), k + " = " + p[k]);

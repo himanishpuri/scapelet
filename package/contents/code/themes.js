@@ -39,7 +39,9 @@ var list = [
             { key: "palette", type: "choice", label: "Palette:", choices: ["Violet", "Teal", "Ember"], def: 0 },
             { key: "density", type: "int", label: "Star density:", min: 1, max: 10, step: 1, def: 5 },
             { key: "lines", type: "bool", label: "Constellation lines", def: true },
-            { key: "shooting", type: "bool", label: "Shooting stars", def: true }
+            { key: "shooting", type: "bool", label: "Shooting stars", def: true },
+            { key: "milkyWay", type: "bool", label: "Milky Way", def: true },
+            { key: "drift", type: "bool", label: "Slow drift", def: true }
         ]
     },
     {
