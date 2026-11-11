@@ -30,6 +30,8 @@ layout(std140, binding = 0) uniform buf {
 layout(binding = 1) uniform sampler2D mask;     // r = narrow sum: > 0 near an icon
 layout(binding = 2) uniform sampler2D noiseTex; // r, g: 2-octave noise, b: 1 octave; tile = 2048 px, repeats
 
+const float E0 = 0.0183156;   // exp(-4): the field blobs' floor, see shaders/field.frag
+
 float hash(vec2 p) {
     return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
 }
@@ -137,29 +139,37 @@ void main() {
             float height = cell * (1.25 + 0.75 * k.y);
             float halfW = min(0.8, (0.46 + 0.26 * fract(k.y * 37.0)) * (kind < 0.5 ? 1.0 : (kind < 1.5 ? 1.15 : (kind < 2.5 ? 1.0 : (kind < 3.5 ? 0.95 : 1.3))))) * cell;
 
-            // The tree shrinks into the ground where its middle is near an icon.
-            float open = texture(mask, (root - vec2(0.0, 0.5 * height)) / resolution).r;
-            float lo = 0.06 + 0.05 * fract(k.x * 17.0);
-            float s = 1.0 - smoothstep(lo, lo + 0.06, open);
+            // The tree shrinks into the ground where its middle is near an icon. lev is the distance to
+            // the nearest icon's core in units of sigma (2: far away). A wide band of lev keeps each tree
+            // shrinking for several hundred ms while the clearing grows; each tree has its own band.
+            float open = clamp(texture(mask, (root - vec2(0.0, 0.5 * height)) / resolution).r, 0.0, 1.0);
+            float lev = sqrt(-log(open * (1.0 - E0) + E0));
+            float jit = 0.3 * (fract(k.x * 17.0) - 0.5);
+            float s = smoothstep(1.0 + jit, 1.8 + jit, lev);
             if (s < 0.02) continue;
+            float fade = smoothstep(0.02, 0.4, s);                   // the last bit of a tree fades out
 
             vec2 q = vec2(px.x - root.x, root.y - px.y) / s;     // px in the tree's own frame, y up
 
             if (dj <= 1) {
                 vec2 e = (q - vec2(0.30 * halfW, -0.03 * height)) / vec2(0.9 * halfW, 0.10 * height + 2.0);
-                shade = max(shade, (1.0 - smoothstep(0.55, 1.0, length(e))) * s);
+                shade = max(shade, (1.0 - smoothstep(0.55, 1.0, length(e))) * s * fade);
             }
             if (dj < 0 || q.y < 0.0 || q.y > height) continue;
 
             float v = q.y / height;
+            // Wind: gusts sweep across the forest downwind (60 px/s) and lean the trees they pass;
+            // each tree also flutters on its own.
+            float gust = smoothstep(0.15, 0.95, 0.5 + 0.5 * sin(dot(root, vec2(0.94, 0.34)) * 0.005 - time * 0.3));
             float rate = floor(300.0 + 240.0 * h.x) / 600.0;     // 0.5..0.9 rad/s, a multiple of 1/600
-            q.x -= sway * v * v * sin(time * rate + 6.2832 * h.y);
+            float flutter = floor(1200.0 + 600.0 * h.y) / 600.0; // 2..3 rad/s
+            q.x -= sway * v * v * (gust * (0.75 + 0.25 * sin(time * flutter + 6.2832 * h.x)) + 0.2 * sin(time * rate + 6.2832 * h.y));
             float tier;
             float cw = crown(kind, v, h.x, tier) * halfW;
             float trunk = v < crownBase(kind) + 0.06 ? max(1.5, 0.07 * halfW + 0.012 * height) : 0.0;
             float aCrown = clamp((cw - abs(q.x)) * s + 0.5, 0.0, 1.0) * step(0.001, cw);
             float aTrunk = clamp((trunk - abs(q.x)) * s + 0.5, 0.0, 1.0) * step(0.001, trunk);
-            float a = max(aCrown, aTrunk);
+            float a = max(aCrown, aTrunk) * fade;
             if (a <= 0.0) continue;
 
             vec3 col = leaf(floor(fract(k.y * 91.0) * 6.0));

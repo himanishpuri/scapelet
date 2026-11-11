@@ -26,7 +26,7 @@ ThemeBase {
         property real time: theme.swaying ? theme.env.time : 0
         property real cell: 52
         property real keep: 0.28 + 0.072 * (theme.settings.density ?? 8)
-        property real sway: theme.swaying ? 3 : 0
+        property real sway: theme.swaying ? 7 : 0
         property vector2d resolution: Qt.vector2d(width, height)
         property color tint: (theme.settings.timeOfDay ?? false) ? theme.env.dayTint : "white"
         property color cGrassLight: theme.pal.grassLight
