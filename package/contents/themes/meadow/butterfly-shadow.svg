@@ -1,0 +1,10 @@
+<!-- SPDX-FileCopyrightText: 2026 himanishpuri <himanishpuri2203@gmail.com> SPDX-License-Identifier: GPL-3.0-or-later -->
+<svg xmlns="http://www.w3.org/2000/svg" width="44" height="44" viewBox="0 0 44 44">
+  <g fill="#000000">
+    <path d="M21 20 Q10 4 4 9 Q0 16 8 21 Q14 23 21 21 Z"/>
+    <path d="M23 20 Q34 4 40 9 Q44 16 36 21 Q30 23 23 21 Z"/>
+    <path d="M21 23 Q11 24 9 31 Q10 38 16 36 Q20 32 21 25 Z"/>
+    <path d="M23 23 Q33 24 35 31 Q34 38 28 36 Q24 32 23 25 Z"/>
+    <ellipse cx="22" cy="23" rx="1.6" ry="9"/>
+  </g>
+</svg>

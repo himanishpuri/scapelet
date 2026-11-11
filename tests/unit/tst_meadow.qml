@@ -9,7 +9,7 @@ TestCase {
 
     function test_palettes_complete() {
         compare(Meadow.palettes.length, 3);
-        const keys = ["grassDark", "grassMid", "grassLight", "haze", "cloudLight", "cloudCore", "cloudShade", "accent"];
+        const keys = ["grassDark", "grassMid", "grassLight", "haze", "shadow", "cloudLight", "cloudCore", "cloudShade", "accent"];
         for (const p of Meadow.palettes) {
             for (const k of keys) {
                 verify(/^#[0-9a-f]{6}$/.test(p[k]), k + " = " + p[k]);

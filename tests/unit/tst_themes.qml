@@ -52,6 +52,8 @@ TestCase {
         compare(v.palette, 0);
         compare(v.fluff, 20);
         compare(v.shadows, true);
+        compare(v.altitude, 140);
+        compare(v.drift, 2);
         compare(v.butterflies, true);
         compare(v.timeOfDay, false);
     }

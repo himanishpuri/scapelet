@@ -26,6 +26,8 @@ var list = [
             { key: "palette", type: "choice", label: "Palette:", choices: ["Spring", "Summer", "Dusk"], def: 0 },
             { key: "fluff", type: "int", label: "Cloud fluffiness (px):", min: 0, max: 40, step: 4, def: 20 },
             { key: "shadows", type: "bool", label: "Cloud shadows", def: true },
+            { key: "altitude", type: "int", label: "Shadow distance (px):", min: 40, max: 240, step: 20, def: 140 },
+            { key: "drift", type: "int", label: "Drifting clouds:", min: 0, max: 5, step: 1, def: 2 },
             { key: "butterflies", type: "bool", label: "Butterflies", def: true },
             { key: "timeOfDay", type: "bool", label: "Tint by time of day", def: false }
         ]
