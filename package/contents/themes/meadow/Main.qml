@@ -6,6 +6,7 @@ import QtQuick
 import "../../engine"
 import "meadow.js" as Meadow
 import "../../code/paths.js" as Paths
+import "../../code/world.js" as World
 
 // Meadow: icons rest on clouds that float over wind-swept grass.
 // The clouds are drawn from the influence field, so they swell, merge, follow and shrink with it;
@@ -51,12 +52,14 @@ ThemeBase {
         active: theme.showButterflies && (clock.coarse <= 1.05 || clock.coarse >= 1.95)
     }
 
-    // Three butterflies follow one curved route every 63 s (60 per time wrap), in view for the first half of each cycle.
+    // One to three butterflies follow one curved route every 63 s (60 per time wrap), in view for the first half of each cycle.
+    // How many fly together is picked anew for each cycle.
     Item {
         id: swarm
         readonly property real cycle: clock.time * 60 / 3769.911184
         readonly property real p: (cycle % 1) / 0.5
         readonly property var route: Paths.route(41, Math.floor(cycle), theme.width, theme.height, 60)
+        readonly property int count: 1 + Math.min(2, Math.floor(3 * World.hash01(Math.floor(cycle) + 0.71, 43)))
         z: 4
         visible: theme.showButterflies && p <= 1
 
@@ -66,6 +69,7 @@ ThemeBase {
                 id: fly
                 required property var modelData
                 required property int index
+                visible: index < swarm.count
                 readonly property var pos: Paths.at(swarm.route, swarm.p - modelData.lag)
                 // Butterflies flutter: they wander around their place on the route.
                 x: pos.x - modelData.side * Math.sin(pos.angle * Math.PI / 180) + 8 * Math.sin(clock.time * 2.3 + index * 1.7)
