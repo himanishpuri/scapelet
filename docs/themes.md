@@ -9,8 +9,9 @@ Scapelet is an environment engine with interchangeable themes. The engine
 tracks the icons and widgets on the desktop, groups them into clusters, renders
 an influence field around them and emits four core events. A theme turns that
 into pictures. Beach (islands in a tropical sea), Meadow (clouds over
-wind-swept grass), Cosmos (nebulae and constellations) and Blueprint (a
-technical plan, the minimal reference) ship with the plugin.
+wind-swept grass), Forest (a clearing in a forest), Cosmos (nebulae and
+constellations) and Blueprint (a technical plan, the minimal reference) ship
+with the plugin.
 
 ## Files
 
@@ -85,12 +86,12 @@ size, sets `env` and `settings`, and reads `accentColor`.
 
 ## Core events
 
-| Event | Payload | Beach | Meadow | Cosmos |
-|---|---|---|---|---|
-| `iconAdded` | `{ id, kind, x, y, w, h, lifted }` | sand appears | cloud gathers | star flares up |
-| `iconsGrouped` | `{ id, members, size, x, y, w, h, cx, cy }` | island expands | clouds merge | constellation forms |
-| `iconRemoved` | as `iconAdded` | water returns | cloud dissolves | star collapses |
-| `iconsMoved` | `[{ id, from: { x, y, w, h }, to: { x, y, w, h } }]` | coastline changes | cloud follows | constellation shifts |
+| Event | Payload | Beach | Meadow | Forest | Cosmos |
+|---|---|---|---|---|---|
+| `iconAdded` | `{ id, kind, x, y, w, h, lifted }` | sand appears | cloud gathers | clearing opens | star flares up |
+| `iconsGrouped` | `{ id, members, size, x, y, w, h, cx, cy }` | island expands | clouds merge | clearings join | constellation forms |
+| `iconRemoved` | as `iconAdded` | water returns | cloud dissolves | trees grow back | star collapses |
+| `iconsMoved` | `[{ id, from: { x, y, w, h }, to: { x, y, w, h } }]` | coastline changes | cloud follows | clearing follows | constellation shifts |
 
 ## Rules
 

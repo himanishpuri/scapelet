@@ -32,11 +32,16 @@ looks like:
   tropical, sunset or night palette, let the light follow the time of day, or
   add a permanent beach along one edge of the screen.
 - **Meadow**: your icons rest on puffy clouds that float over wind-swept grass
-  and cast soft shadows on it. Butterflies drift past. Spring, summer and dusk
-  palettes.
-- **Cosmos**: a twinkling night sky. A glowing nebula gathers around every
-  icon, grouped icons are joined into constellations, and a shooting star
-  crosses now and then. Violet, teal and ember palettes.
+  and cast soft shadows on it. More clouds drift by, and one to three
+  butterflies wander past. Spring, summer and dusk palettes.
+- **Forest**: a paper-cut forest of firs, round trees, cypresses and stacked
+  bushes that sway in the wind. The trees step back to open a clearing around
+  your icons and grow back when the icons leave, and sparrows fly over. Summer,
+  autumn and winter palettes, with a density setting.
+- **Cosmos**: a slowly drifting night sky with the Milky Way and coloured
+  stars. A glowing nebula gathers around every icon, grouped icons are joined
+  into constellations, and a shooting star crosses now and then. Violet, teal
+  and ember palettes.
 - **Blueprint**: your desktop drawn as a technical plan, with contour lines
   around every group of icons.
 
