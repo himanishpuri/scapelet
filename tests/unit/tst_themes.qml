@@ -59,7 +59,7 @@ TestCase {
     }
 
     function test_cosmos_defaults() {
-        compare(Themes.list.map(t => t.id).join(","), "beach,meadow,forest,cosmos,blueprint");
+        compare(Themes.list.map(t => t.id).join(","), "beach,meadow,forest,city,cosmos,blueprint");
         const v = Themes.resolve("cosmos", '{"cosmos":{"density":11}}');
         compare(v.palette, 0);
         compare(v.density, 5);
@@ -67,6 +67,17 @@ TestCase {
         compare(v.shooting, true);
         compare(v.milkyWay, true);
         compare(v.drift, true);
+    }
+
+    function test_city_defaults() {
+        compare(Themes.find("city").id, "city");
+        const v = Themes.resolve("city", '{"city":{"density":11,"palette":2}}');
+        compare(v.palette, 2);
+        compare(v.density, 8);
+        compare(v.smoke, true);
+        compare(v.windmills, true);
+        compare(v.pigeons, true);
+        compare(v.timeOfDay, false);
     }
 
     function test_forest_defaults() {

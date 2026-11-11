@@ -48,6 +48,19 @@ var list = [
         ]
     },
     {
+        id: "city",
+        name: "City",
+        terms: { appear: "Square opens after (ms):", disappear: "Houses return after (ms):", morph: "Open/return duration (ms):", widgets: "Open a square around desktop widgets" },
+        settings: [
+            { key: "palette", type: "choice", label: "Palette:", choices: ["Day", "Dusk", "Night"], def: 0 },
+            { key: "density", type: "int", label: "House density:", min: 1, max: 10, step: 1, def: 8 },
+            { key: "smoke", type: "bool", label: "Chimney smoke", def: true },
+            { key: "windmills", type: "bool", label: "Windmills", def: true },
+            { key: "pigeons", type: "bool", label: "Pigeons", def: true },
+            { key: "timeOfDay", type: "bool", label: "Tint by time of day", def: false }
+        ]
+    },
+    {
         id: "cosmos",
         name: "Cosmos",
         terms: { appear: "Nebula appears after (ms):", disappear: "Nebula fades after (ms):", morph: "Glow/fade duration (ms):", widgets: "Wrap desktop widgets in nebulae" },
