@@ -88,6 +88,18 @@ Item {
         }
     }
 
+    // The host calls this for a left click on empty desktop at (x, y) in this item's coordinates.
+    function tap(x, y) {
+        const t = engine.themeItem;
+        if (!t || !engine.running) {
+            return;   // nobody is watching
+        }
+        if (engine.debug) {
+            console.info("scapelet: tap " + Math.round(x) + "," + Math.round(y));
+        }
+        t.tapped(x, y);
+    }
+
     // Saves this item as a PNG with blocks in place of the icons. done(ok) runs when the file is written.
     // Only the engine's own items are grabbed, so real icons and their names can never be in the picture.
     function exportImage(path, done) {

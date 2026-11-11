@@ -20,6 +20,7 @@ Kirigami.FormLayout {
     property alias cfg_MorphDuration: morphDuration.value
     property alias cfg_Animate: animate.checked
     property alias cfg_IncludeWidgets: includeWidgets.checked
+    property alias cfg_ReactToClicks: reactToClicks.checked
     property alias cfg_Fps: fps.value
     property alias cfg_RenderScale: renderScale.value
     property alias cfg_PauseMode: pauseMode.currentIndex
@@ -117,6 +118,11 @@ Kirigami.FormLayout {
     QQC2.CheckBox {
         id: includeWidgets
         text: root.themeEntry.terms.widgets
+    }
+
+    QQC2.CheckBox {
+        id: reactToClicks
+        text: "React to clicks on the empty desktop"
     }
 
     QQC2.SpinBox {

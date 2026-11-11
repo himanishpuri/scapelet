@@ -123,6 +123,26 @@ ThemeBase {
     onIconsGrouped: cluster => ripple(cluster.cx, cluster.cy, Math.max(cluster.w, cluster.h) + reach,
                                       theme.env.appearDelay + theme.env.morphDuration)
 
+    // A click: gulls near it scatter, the kayak under it rocks, and open water ripples.
+    onTapped: (x, y) => {
+        const lead = Paths.at(flock.route, flock.p);
+        if (flock.visible && Math.hypot(x - lead.x, y - lead.y) < 110) {
+            startle.restart();
+            return;
+        }
+        if (kayak.visible && Math.hypot(x - kayak.x, y - kayak.y) < 60) {
+            rocking.restart();
+            ripple(kayak.x, kayak.y, 90, 0);
+            return;
+        }
+        for (const o of theme.obstacles) {
+            if (Paths.rectDist(x, y, o) < 0.8 * theme.env.influenceRadius) {
+                return;   // on land
+            }
+        }
+        ripple(x, y, 110, 0);
+    }
+
     // Palm trees on clusters of three or more icons.
     Roster {
         id: palms
@@ -213,7 +233,10 @@ ThemeBase {
         visible: theme.showKayak && pos !== null
         x: pos ? pos.x : 0
         y: pos ? pos.y : 0
-        heading: (pos ? pos.angle : 0) + 4 * Math.sin(theme.env.time * 0.5)
+        // 1 right after a click on the kayak, back to 0 in two seconds: it rocks.
+        property real rock: 0
+        NumberAnimation { id: rocking; target: kayak; property: "rock"; from: 1; to: 0; duration: 2000; easing.type: Easing.OutQuad }
+        heading: (pos ? pos.angle : 0) + 4 * Math.sin(theme.env.time * 0.5) + 26 * rock * Math.sin(rock * 20)
         source: Qt.resolvedUrl("kayak.svg")
         shadowSource: Qt.resolvedUrl("kayak-shadow.svg")
         spriteWidth: 64
@@ -247,6 +270,14 @@ ThemeBase {
         z: 4
         visible: theme.showBirds && p <= 1
 
+        // 1 right after a click near the flock, back to 0 within three seconds: the birds scatter.
+        property real scatter: 0
+        SequentialAnimation {
+            id: startle
+            NumberAnimation { target: flock; property: "scatter"; to: 1; duration: 250; easing.type: Easing.OutCubic }
+            NumberAnimation { target: flock; property: "scatter"; to: 0; duration: 2600; easing.type: Easing.InOutQuad }
+        }
+
         Repeater {
             model: [{ lag: 0, side: 0 }, { lag: 0.022, side: 26 }, { lag: 0.02, side: -26 }]
             delegate: ShadowSprite {
@@ -256,9 +287,11 @@ ThemeBase {
                 readonly property var pos: Paths.at(flock.route, flock.p - modelData.lag)
                 // 1 while the bird beats its wings, 0 while it glides.
                 readonly property real beat: Math.max(0, Math.min(1, 0.5 + 2 * Math.sin(theme.birdTime * 0.7 + index * 2.1)))
-                x: pos.x - modelData.side * Math.sin(pos.angle * Math.PI / 180)
-                y: pos.y + modelData.side * Math.cos(pos.angle * Math.PI / 180)
-                heading: pos.angle
+                // Scattered, a gull swings wide of its place (the leader too) and beats its wings hard.
+                readonly property real wide: (modelData.side + (index === 0 ? 30 : 0) * flock.scatter) * (1 + 1.6 * flock.scatter)
+                x: pos.x - wide * Math.sin(pos.angle * Math.PI / 180)
+                y: pos.y + wide * Math.cos(pos.angle * Math.PI / 180)
+                heading: pos.angle + 25 * flock.scatter * Math.sin(index * 2.4 + 1)
                 source: Qt.resolvedUrl("bird.svg")
                 shadowSource: Qt.resolvedUrl("bird-shadow.svg")
                 spriteWidth: 36
@@ -266,7 +299,7 @@ ThemeBase {
                 sourceSize: Qt.size(48, 32)
                 altitude: 60
                 shadowOpacity: 0.22
-                beatY: 1 - 0.25 * beat * (1 - Math.sin(theme.birdTime * 9 + index * 2))
+                beatY: 1 - (0.25 + 0.3 * flock.scatter) * Math.max(beat, flock.scatter) * (1 - Math.sin(theme.birdTime * 9 + index * 2))
             }
         }
     }

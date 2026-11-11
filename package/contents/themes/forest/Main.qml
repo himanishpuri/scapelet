@@ -66,6 +66,14 @@ ThemeBase {
         z: 4
         visible: theme.showSparrows && p <= 1
 
+        // 1 right after a click near the flock, back to 0 within three seconds: the birds scatter.
+        property real scatter: 0
+        SequentialAnimation {
+            id: startle
+            NumberAnimation { target: flight; property: "scatter"; to: 1; duration: 250; easing.type: Easing.OutCubic }
+            NumberAnimation { target: flight; property: "scatter"; to: 0; duration: 2600; easing.type: Easing.InOutQuad }
+        }
+
         Repeater {
             model: [{ lag: 0, side: 0 }, { lag: 0.012, side: 18 }, { lag: 0.016, side: -16 }, { lag: 0.03, side: 6 }, { lag: 0.036, side: -30 }]
             delegate: ShadowSprite {
@@ -76,9 +84,11 @@ ThemeBase {
                 // Sparrows fly in bounds: a burst of wing beats, then a short glide with the wings folded.
                 readonly property real beat: Math.max(0, Math.min(1, 0.5 + 2 * Math.sin(clock.time * 5 + index * 1.3)))
                 readonly property real bound: 5 * Math.sin(clock.time * 5 + index * 1.3)
-                x: pos.x - (modelData.side + bound) * Math.sin(pos.angle * Math.PI / 180)
-                y: pos.y + (modelData.side + bound) * Math.cos(pos.angle * Math.PI / 180)
-                heading: pos.angle
+                // Scattered, a sparrow swings wide of its place (the leader too).
+                readonly property real wide: (modelData.side + bound + (index === 0 ? 24 : 0) * flight.scatter) * (1 + 1.8 * flight.scatter)
+                x: pos.x - wide * Math.sin(pos.angle * Math.PI / 180)
+                y: pos.y + wide * Math.cos(pos.angle * Math.PI / 180)
+                heading: pos.angle + 30 * flight.scatter * Math.sin(index * 2.4 + 1)
                 source: Qt.resolvedUrl("sparrow.svg")
                 shadowSource: Qt.resolvedUrl("sparrow-shadow.svg")
                 spriteWidth: 20
@@ -89,5 +99,25 @@ ThemeBase {
                 beatY: 1 - 0.3 * beat * (1 - Math.sin(clock.time * 24 + index * 2)) - 0.45 * (1 - beat)
             }
         }
+    }
+
+    Component {
+        id: startled
+        Burst { source: Qt.resolvedUrl("sparrow.svg"); count: 3; spriteWidth: 20; spriteHeight: 16; z: 4 }
+    }
+
+    // A click: sparrows near it scatter; anywhere else, birds fly up out of the trees.
+    onTapped: (x, y) => {
+        const lead = Paths.at(flight.route, flight.p);
+        if (flight.visible && Math.hypot(x - lead.x, y - lead.y) < 110) {
+            startle.restart();
+            return;
+        }
+        for (const o of theme.env.sources) {
+            if (Paths.rectDist(x, y, o) < theme.env.influenceRadius) {
+                return;   // in a clearing: no tree to fly out of
+            }
+        }
+        startled.createObject(theme, { cx: x, cy: y });
     }
 }

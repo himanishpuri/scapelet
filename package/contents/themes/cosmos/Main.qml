@@ -191,4 +191,44 @@ ThemeBase {
             }
         }
     }
+
+    // A shooting star that starts at (cx, cy), flies 420 px in 0.9 s and destroys itself. The head is at the item's origin.
+    Component {
+        id: wish
+        Item {
+            id: w
+            property real cx
+            property real cy
+            property real dir: 1               // 1: flies right, -1: left
+            property real angle: 30            // degrees below horizontal
+            property real p: 0
+            x: cx + dir * 420 * p * Math.cos(angle * Math.PI / 180)
+            y: cy + 420 * p * Math.sin(angle * Math.PI / 180)
+            rotation: dir > 0 ? angle : 180 - angle
+            opacity: Math.sin(Math.PI * p)
+            Rectangle {
+                x: -110
+                y: -1
+                width: 110
+                height: 2
+                antialiasing: true
+                gradient: Gradient {
+                    orientation: Gradient.Horizontal
+                    GradientStop { position: 0; color: "transparent" }
+                    GradientStop { position: 1; color: theme.pal.star }
+                }
+            }
+            SequentialAnimation {
+                running: true
+                NumberAnimation { target: w; property: "p"; to: 1; duration: 900 }
+                ScriptAction { script: w.destroy() }
+            }
+        }
+    }
+
+    // A click: a star flares up there and a shooting star flies off toward the far side of the screen.
+    onTapped: (x, y) => {
+        flare.createObject(theme, { cx: x, cy: y, size: 46, delay: 0, z: 2 });
+        wish.createObject(theme, { cx: x, cy: y, dir: x < theme.width / 2 ? 1 : -1, angle: 20 + 30 * World.hash01(x, y), z: 4 });
+    }
 }

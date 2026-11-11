@@ -86,4 +86,15 @@ ThemeBase {
         }
     }
     onIconsGrouped: cluster => note("grouped \u00d7" + cluster.size, cluster.cx - 30, cluster.y - 36)
+
+    Component {
+        id: ping
+        Ring { tone: "#33ccff"; duration: 900 }
+    }
+
+    // A click: a measuring ring and the coordinates.
+    onTapped: (x, y) => {
+        ping.createObject(theme, { cx: x, cy: y, size: 90 });
+        note(Math.round(x) + ", " + Math.round(y), x + 10, y - 22);
+    }
 }

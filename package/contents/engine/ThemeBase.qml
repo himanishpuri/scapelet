@@ -26,6 +26,10 @@ Item {
     signal iconsMoved(var moves)         // [{ id, from: { x, y, w, h }, to: { x, y, w, h } }]
     signal iconsGrouped(var cluster)     // a cluster that formed or grew
 
+    // A left click on empty desktop, in this item's coordinates. Emitted only while the engine runs
+    // and the user has "React to clicks" on. A theme may ignore it.
+    signal tapped(real x, real y)
+
     // Output, read by the engine.
     property color accentColor: "transparent"
 }

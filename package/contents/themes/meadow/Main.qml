@@ -63,6 +63,14 @@ ThemeBase {
         z: 4
         visible: theme.showButterflies && p <= 1
 
+        // 1 right after a click near the flock, back to 0 within three seconds: the butterflies dart apart.
+        property real scatter: 0
+        SequentialAnimation {
+            id: startle
+            NumberAnimation { target: swarm; property: "scatter"; to: 1; duration: 250; easing.type: Easing.OutCubic }
+            NumberAnimation { target: swarm; property: "scatter"; to: 0; duration: 2600; easing.type: Easing.InOutQuad }
+        }
+
         Repeater {
             model: [{ lag: 0, side: 0 }, { lag: 0.03, side: 30 }, { lag: 0.045, side: -24 }]
             delegate: ShadowSprite {
@@ -72,8 +80,8 @@ ThemeBase {
                 visible: index < swarm.count
                 readonly property var pos: Paths.at(swarm.route, swarm.p - modelData.lag)
                 // Butterflies flutter: they wander around their place on the route.
-                x: pos.x - modelData.side * Math.sin(pos.angle * Math.PI / 180) + 8 * Math.sin(clock.time * 2.3 + index * 1.7)
-                y: pos.y + modelData.side * Math.cos(pos.angle * Math.PI / 180) + 12 * Math.sin(clock.time * 3.1 + index * 2.9)
+                x: pos.x - modelData.side * Math.sin(pos.angle * Math.PI / 180) + 8 * Math.sin(clock.time * 2.3 + index * 1.7) + 70 * swarm.scatter * Math.cos(index * 2.1 + 0.6)
+                y: pos.y + modelData.side * Math.cos(pos.angle * Math.PI / 180) + 12 * Math.sin(clock.time * 3.1 + index * 2.9) - 60 * swarm.scatter * Math.abs(Math.sin(index * 2.1 + 0.6))
                 heading: pos.angle + 90 + 14 * Math.sin(clock.time * 2.3 + index * 1.7)     // the picture faces up
                 source: Qt.resolvedUrl("butterfly.svg")
                 shadowSource: Qt.resolvedUrl("butterfly-shadow.svg")
@@ -86,5 +94,21 @@ ThemeBase {
                 beatX: 0.3 + 0.7 * Math.abs(Math.sin(clock.time * 11 + index * 2))
             }
         }
+    }
+
+    Component {
+        id: gust
+        Ring { tone: "white"; peak: 0.45; z: 1 }
+    }
+
+    // A click: butterflies near it dart apart; anywhere else, a gust spreads through the grass.
+    onTapped: (x, y) => {
+        const lead = Paths.at(swarm.route, swarm.p);
+        if (swarm.visible && Math.hypot(x - lead.x, y - lead.y) < 110) {
+            startle.restart();
+            return;
+        }
+        gust.createObject(theme, { cx: x, cy: y, size: 170 });
+        gust.createObject(theme, { cx: x, cy: y, size: 170, delay: 300 });
     }
 }

@@ -74,6 +74,14 @@ ThemeBase {
         z: 4
         visible: theme.showPigeons && p <= 1
 
+        // 1 right after a click near the flock, back to 0 within three seconds: the birds scatter.
+        property real scatter: 0
+        SequentialAnimation {
+            id: startle
+            NumberAnimation { target: flight; property: "scatter"; to: 1; duration: 250; easing.type: Easing.OutCubic }
+            NumberAnimation { target: flight; property: "scatter"; to: 0; duration: 2600; easing.type: Easing.InOutQuad }
+        }
+
         Repeater {
             model: [{ lag: 0, side: 0 }, { lag: 0.010, side: 20 }, { lag: 0.014, side: -18 }, { lag: 0.026, side: 8 },
                     { lag: 0.030, side: -34 }, { lag: 0.040, side: 30 }, { lag: 0.046, side: -10 }]
@@ -84,9 +92,11 @@ ThemeBase {
                 readonly property var pos: Paths.at(flight.route, flight.p - modelData.lag)
                 // Pigeons flap steadily and rock a little from side to side.
                 readonly property real rock: 4 * Math.sin(clock.time * 2 + index * 1.7)
-                x: pos.x - (modelData.side + rock) * Math.sin(pos.angle * Math.PI / 180)
-                y: pos.y + (modelData.side + rock) * Math.cos(pos.angle * Math.PI / 180)
-                heading: pos.angle
+                // Scattered, a pigeon swings wide of its place (the leader too).
+                readonly property real wide: (modelData.side + rock + (index === 0 ? 24 : 0) * flight.scatter) * (1 + 1.8 * flight.scatter)
+                x: pos.x - wide * Math.sin(pos.angle * Math.PI / 180)
+                y: pos.y + wide * Math.cos(pos.angle * Math.PI / 180)
+                heading: pos.angle + 30 * flight.scatter * Math.sin(index * 2.4 + 1)
                 source: Qt.resolvedUrl("pigeon.svg")
                 shadowSource: Qt.resolvedUrl("pigeon-shadow.svg")
                 spriteWidth: 22
@@ -97,5 +107,20 @@ ThemeBase {
                 beatY: 1 - 0.45 * (0.5 + 0.5 * Math.sin(clock.time * 18 + index * 2))
             }
         }
+    }
+
+    Component {
+        id: startled
+        Burst { source: Qt.resolvedUrl("pigeon.svg"); count: 4; spriteWidth: 22; spriteHeight: 18; z: 4 }
+    }
+
+    // A click: pigeons near it scatter; anywhere else, pigeons take off from the street.
+    onTapped: (x, y) => {
+        const lead = Paths.at(flight.route, flight.p);
+        if (flight.visible && Math.hypot(x - lead.x, y - lead.y) < 110) {
+            startle.restart();
+            return;
+        }
+        startled.createObject(theme, { cx: x, cy: y });
     }
 }

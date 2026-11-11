@@ -44,6 +44,14 @@ WallpaperItem {
         debug: root.configuration.DebugLog
     }
 
+    TapProbe {
+        host: root
+        folderView: probe.folderView
+        active: root.configuration.ReactToClicks
+        debug: root.configuration.DebugLog
+        onTapped: (x, y) => engine.tap(x, y)
+    }
+
     // Icons present when the desktop loads get their areas instantly;
     // changes after this timer animate with the configured delays.
     Timer {
