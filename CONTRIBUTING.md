@@ -51,7 +51,7 @@ recipe hands `dist/` back to your user when it is done.
 ## Code rules
 
 - Every file starts with the SPDX header (`GPL-3.0-or-later`).
-- Pure QML, JavaScript and GLSL; no C++ and no CMake.
+- Pure QML, JavaScript and GLSL; no C++ and no CMake ([why](docs/compatibility.md#why-there-is-no-c)).
 - Use `console.info` for debug output: Fedora's logging rules drop
   `console.log`.
 - Never log or draw icon names or other file names.

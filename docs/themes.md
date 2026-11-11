@@ -8,8 +8,9 @@
 Scapelet is an environment engine with interchangeable themes. The engine
 tracks the icons and widgets on the desktop, groups them into clusters, renders
 an influence field around them and emits four core events. A theme turns that
-into pictures. Beach (islands in a tropical sea) and Blueprint (a technical
-plan, the minimal reference) ship with the plugin.
+into pictures. Beach (islands in a tropical sea), Meadow (clouds over
+wind-swept grass), Cosmos (nebulae and constellations) and Blueprint (a
+technical plan, the minimal reference) ship with the plugin.
 
 ## Files
 
@@ -29,11 +30,11 @@ theme up from the registry.
 
 ```js
 {
-    id: "meadow",                 // directory name under themes/
-    name: N_("Meadow"),           // shown in the Theme combo box
+    id: "forest",                 // directory name under themes/
+    name: N_("Forest"),           // shown in the Theme combo box
     settings: [
-        { key: "flowers", type: "bool", label: N_("Flowers"), def: true },
-        { key: "density", type: "int", label: N_("Grass density:"), min: 1, max: 10, step: 1, def: 5 },
+        { key: "mushrooms", type: "bool", label: N_("Mushrooms"), def: true },
+        { key: "density", type: "int", label: N_("Tree density:"), min: 1, max: 10, step: 1, def: 5 },
         { key: "season", type: "choice", label: N_("Season:"), choices: [N_("Spring"), N_("Autumn")], def: 0 }
     ]
 }
@@ -84,12 +85,12 @@ size, sets `env` and `settings`, and reads `accentColor`.
 
 ## Core events
 
-| Event | Payload | Beach | City (idea) | Cosmos (idea) |
+| Event | Payload | Beach | Meadow | Cosmos |
 |---|---|---|---|---|
-| `iconAdded` | `{ id, kind, x, y, w, h, lifted }` | sand appears | building appears | star appears |
-| `iconsGrouped` | `{ id, members, size, x, y, w, h, cx, cy }` | island expands | district forms | nebula grows |
-| `iconRemoved` | as `iconAdded` | water returns | building disappears | star fades |
-| `iconsMoved` | `[{ id, from: { x, y, w, h }, to: { x, y, w, h } }]` | coastline changes | roads rearrange | constellation shifts |
+| `iconAdded` | `{ id, kind, x, y, w, h, lifted }` | sand appears | cloud gathers | star flares up |
+| `iconsGrouped` | `{ id, members, size, x, y, w, h, cx, cy }` | island expands | clouds merge | constellation forms |
+| `iconRemoved` | as `iconAdded` | water returns | cloud dissolves | star collapses |
+| `iconsMoved` | `[{ id, from: { x, y, w, h }, to: { x, y, w, h } }]` | coastline changes | cloud follows | constellation shifts |
 
 ## Rules
 
@@ -102,6 +103,9 @@ size, sets `env` and `settings`, and reads `accentColor`.
 - Never log or draw `source.id`: it contains file names.
 - Use `engine/Roster.qml` for things that appear and disappear: it keeps one
   delegate per rectangle and lets it animate out before it is destroyed.
+- Use `engine/FrameClock.qml` for sprites that must move at the display rate:
+  it follows `env.time` but advances every frame while `active`. Enable
+  `layer.enabled` on the full-screen shader while the clock runs.
 - Put shaders next to `Main.qml` as `*.frag` and load them as
   `Qt.resolvedUrl("<name>.frag.qsb")`. Do not name a sampler `noise`; it stays
   empty. Beach uses `noiseTex`.

@@ -31,11 +31,17 @@ looks like:
   kayak paddles through open water and seabirds fly past now and then. Pick a
   tropical, sunset or night palette, let the light follow the time of day, or
   add a permanent beach along one edge of the screen.
+- **Meadow**: your icons rest on puffy clouds that float over wind-swept grass
+  and cast soft shadows on it. Butterflies drift past. Spring, summer and dusk
+  palettes.
+- **Cosmos**: a twinkling night sky. A glowing nebula gathers around every
+  icon, grouped icons are joined into constellations, and a shooting star
+  crosses now and then. Violet, teal and ember palettes.
 - **Blueprint**: your desktop drawn as a technical plan, with contour lines
   around every group of icons.
 
-More themes can be added without touching the engine. Ideas on the list include
-a meadow, a city and a starry sky.
+More themes can be added without touching the engine. A city is on the list of
+ideas.
 
 ## Install
 

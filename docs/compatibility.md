@@ -48,7 +48,8 @@ change in Plasma before a wallpaper plugin can work around it.
   icons, so it shows open sea with the kayak and seabirds.
 - **No idle pause.** Wayland returns `NotSupported` for `GetSessionIdleTime`,
   and there is no QML idle-time module. The lock pause and the display
-  power-off cover the same case.
+  power-off cover the same case. A C++ plugin could use KIdleTime; see "Why
+  there is no C++".
 - **No drag preview under the pointer.** Plasma reports no pointer position
   during an icon drag, so the lifted icon's island thins to a shoal and nothing
   follows the pointer.
@@ -56,6 +57,40 @@ change in Plasma before a wallpaper plugin can work around it.
   which means per screen and per activity. This is Plasma's design.
 - Folder View list mode needs `inPanel`, so it cannot occur on the desktop.
   Only icon mode is supported, which is the only mode a desktop can use.
+
+## Why there is no C++
+
+Scapelet is QML, JavaScript and GLSL in a plain KPackage. A compiled Qt Quick
+plugin (C++ items in a QML module that ships next to the package) was
+considered and left out.
+
+| | QML-only package (chosen) | With a C++ QML module |
+|---|---|---|
+| Install | `kpackagetool6` copies files to `~/.local/share`; no root, no compiler | the module must be in a QML import path: system-wide (root), or `QML_IMPORT_PATH` set for `plasmashell` |
+| Packages | one `noarch` RPM and one tarball for every distribution | one build per distribution and CPU architecture |
+| Build | `make` and `qsb` | CMake, extra-cmake-modules, Qt and KDE Frameworks headers |
+| A bug | a QML error leaves a blank wallpaper and a log line | a crash takes `plasmashell` down, because wallpapers run inside it |
+| KDE Store | can be offered through "Get New Wallpaper Plugins" | cannot: the store installs packages without compiled code |
+
+What C++ would not fix:
+
+- **Icon positions.** Folder View keeps them in Plasma-private code. C++ gets
+  no public API either and would walk the same objects.
+- **Speed.** The per-frame work is fragment shaders on the GPU. JavaScript
+  runs only when an icon changes and on the engine's clock tick.
+
+What C++ would fix:
+
+- **Idle pause.** KIdleTime works on Wayland (`KF6IdleTimeWaylandPlugin`), but
+  it has no QML binding. This is the only limit above that C++ lifts for
+  certain.
+- **Drag preview, perhaps.** A C++ event filter on the desktop window might
+  see the pointer during an icon drag. This was not tried.
+
+One missing pause mode did not justify a compiler, per-architecture packages
+and a way to crash the desktop. The lock pause and the display power-off
+already cover most idle time. If Plasma gains a QML idle-time module, the gap
+closes without C++.
 
 ## Test matrix
 

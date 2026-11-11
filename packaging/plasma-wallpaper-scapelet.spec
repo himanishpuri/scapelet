@@ -19,7 +19,8 @@ Requires:       plasma-desktop >= 6.3
 %description
 Scapelet is an animated Plasma 6 wallpaper. An environment engine tracks the
 icons and widgets on the desktop and a theme draws a landscape around them:
-the Beach theme grows sandy islands that merge, move and sink with the icons.
+Beach grows sandy islands, Meadow gathers clouds over grass and Cosmos lights
+nebulae and constellations.
 
 %prep
 %autosetup -n scapelet-%{version}
