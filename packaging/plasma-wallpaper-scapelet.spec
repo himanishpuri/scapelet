@@ -42,6 +42,7 @@ cp -a package/. %{buildroot}%{_datadir}/plasma/wallpapers/%{plugin_id}/
 - City: the still part of the town is drawn once; a frame costs about a fifth of the GPU time
 - Forest: about a fifth less GPU time per frame
 - Developer tools: make bench, make same
+
 * Wed Nov 11 2026 himanishpuri <himanishpuri2203@gmail.com> - 0.6.0-1
 - New theme: City, an old industrial town that opens a square around the icons
 - Clicks on the empty desktop make the theme react; can be turned off
