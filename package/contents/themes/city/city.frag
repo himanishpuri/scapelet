@@ -204,6 +204,16 @@ float tiles(vec2 p, float style) {
 void main() {
     vec2 px = qt_TexCoord0 * resolution;
     vec2 lotSize = vec2(cell, DEPTH * cell);
+    // lv: the distance to the nearest icon. The width of the square's pen line needs how fast
+    // it changes from one drawn pixel to the next. That is worked out from the 2 x 2 block of
+    // drawn pixels this one lies in, as fwidth(lv) does, but from fixed places: fwidth() gives
+    // another result on the screen than in a texture, and it needs lv in all four pixels of
+    // the block, also in one that is not drawn anew.
+    vec2 unit = abs(vec2(dFdx(px.x), dFdy(px.y)));        // px per drawn pixel
+    float lv = level(px);
+    vec2 p0 = px - mod(floor(px / unit), 2.0) * unit;     // the block's pixel nearest the top left
+    float l01 = level(p0 + vec2(0.0, unit.y));
+    float lvWidth = abs(level(p0 + unit) - l01) + abs(level(p0) - l01);
     float open = texture(mask, qt_TexCoord0).r;
 
     // Ground, in watercolour: sandy streets and squares, grass in washes everywhere else.
@@ -214,7 +224,6 @@ void main() {
     vec4 grainTex = texture(noiseTex, px / 260.0);
     float street = 1.0 - smoothstep(0.022, 0.040, streetAt(px) + 0.012 * (w4 - 0.5));
     // The square: sand where the houses have folded away, inside a dashed pen line.
-    float lv = level(px);
     float square = 1.0 - smoothstep(1.02, 1.12, lv + 0.10 * (w4 - 0.5));
     float turf = smoothstep(0.38, 0.52, 0.55 * w2 + 0.45 * w3 + 0.25 * (w4 - 0.5));     // where grass would grow
     float grassy = turf * (1.0 - 0.92 * street) * (1.0 - 0.80 * square);
@@ -235,7 +244,7 @@ void main() {
     ground *= 1.0 - 0.05 * paved * (hash(floor(ft)) - 0.3);
     ground = mix(ground, cInk.rgb, 0.17 * fan * paved);
     float dash = mod(floor(px.x / 5.0) + floor(px.y / 5.0), 2.0);
-    float line = abs(lv + 0.10 * (w4 - 0.5) - 1.07) / max(fwidth(lv), 1e-4);
+    float line = abs(lv + 0.10 * (w4 - 0.5) - 1.07) / max(lvWidth, 1e-4);
     ground = mix(ground, cInk.rgb, 0.55 * dash * (1.0 - smoothstep(0.6, 1.5, line)));
 
     // Houses: one per lot, drawn front (lower on screen) to back. A house is at most 0.76 cells wide
