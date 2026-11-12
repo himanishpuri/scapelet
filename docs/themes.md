@@ -84,6 +84,7 @@ size, sets `env` and `settings`, and reads `accentColor`.
 | `appearDelay`, `disappearDelay`, `morphDuration` | ms, the user's timing settings |
 | `animateChanges` | false at start-up; changes then apply instantly and no events fire |
 | `hour`, `dayTint` | local hour 0..24 and a matching light colour |
+| `renderScale` | pixels drawn per screen pixel along each axis, the user's "Render scale"; 1 unless the user lowered it |
 
 ## Core events
 
@@ -113,6 +114,11 @@ and `engine/Burst.qml` (sprites flying apart) are ready to create with
 - Use `engine/FrameClock.qml` for sprites that must move at the display rate:
   it follows `env.time` but advances every frame while `active`. Enable
   `layer.enabled` on the full-screen shader while the clock runs.
+- A shader whose picture is mostly still should not draw all of it on every
+  tick. Use `engine/StillCache.qml`: one pass draws the whole picture once
+  and marks the pixels that move, the pass that draws the frames copies the
+  rest. City does this; see the comments in `StillCache.qml` and `city.frag`.
+  Check with `make same` that the picture stays the same at many times.
 - Put shaders next to `Main.qml` as `*.frag` and load them as
   `Qt.resolvedUrl("<name>.frag.qsb")`. Do not name a sampler `noise`; it stays
   empty. Beach uses `noiseTex`.

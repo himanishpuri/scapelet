@@ -23,9 +23,30 @@
 | `make harness` | interactive harness with draggable fake icons |
 | `make stats` | harness with ticks, presented frames and CPU share once a second (`ARGS=--paused` to check that a paused engine draws nothing) |
 | `make gpu` | GPU render-engine share of plasmashell over 10 s |
+| `make bench` | GPU time of one full-screen frame at full GPU speed: `make bench SCALE=3 ARGS="--theme city --time 20"`. Needs X11 or XWayland |
+| `make same` | proves a change leaves the picture as it was: `make same REF=<other checkout> ARGS="--theme city --time 20"` compares one paused frame pixel by pixel |
 | `make install` / `make reload` | install to `~/.local/share/plasma/wallpapers` and restart plasmashell |
 | `make debug-on` / `make debug-off` | journal logging of icon tracking and power state |
 | `make rpm` | build the RPM in a Fedora container (see below) |
+
+## Measuring a theme
+
+The share of the GPU a wallpaper uses (`make gpu`) says little about a shader:
+the GPU clocks down under a light load, so a cheaper shader can show the same
+share. `make bench` draws the theme several times larger than the screen
+without vsync, which saturates the GPU, and prints the milliseconds one
+full-screen frame costs at full speed. Choose `SCALE` so that fewer than 55
+frames a second come out.
+
+A change that is meant to save work must not change the picture. Keep a
+checkout of the commit before the change, build its shaders, and run
+`make same REF=<that checkout>` with several `--time` values and settings;
+it must print `same pixels=0` each time.
+
+On Intel GPUs with Mesa, `sh tools/simd.sh --theme <id>` shows how the driver
+compiled the theme's shader. A shader with too many values alive at once is
+run 8 pixels wide instead of 16, at about half the speed, without any
+message. A large shader listed only as `SIMD8` has that problem.
 
 ## Building the RPM
 
