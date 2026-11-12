@@ -3,7 +3,7 @@
 %global plugin_id io.github.himanishpuri.scapelet
 
 Name:           plasma-wallpaper-scapelet
-Version:        0.6.0
+Version:        0.6.1
 Release:        1%{?dist}
 Summary:        Plasma wallpaper that grows a landscape around your desktop icons
 License:        GPL-3.0-or-later
@@ -38,6 +38,10 @@ cp -a package/. %{buildroot}%{_datadir}/plasma/wallpapers/%{plugin_id}/
 %{_datadir}/plasma/wallpapers/%{plugin_id}/
 
 %changelog
+* Thu Nov 12 2026 himanishpuri <himanishpuri2203@gmail.com> - 0.6.1-1
+- City: the still part of the town is drawn once; a frame costs about a fifth of the GPU time
+- Forest: about a fifth less GPU time per frame
+- Developer tools: make bench, make same
 * Wed Nov 11 2026 himanishpuri <himanishpuri2203@gmail.com> - 0.6.0-1
 - New theme: City, an old industrial town that opens a square around the icons
 - Clicks on the empty desktop make the theme react; can be turned off
