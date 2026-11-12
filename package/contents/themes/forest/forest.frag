@@ -381,10 +381,12 @@ void main() {
     vec2 id = floor(px / cell);
     vec4 acc = vec4(0.0);      // premultiplied colour of the trees in front of the people
     vec4 back = vec4(0.0);     // and of the trees behind them
-    int rows = int(floor(0.85 + 2.1 * size / cell));
-    int side = int(floor(0.85 + (0.97 * size + sway) / cell));
-    for (int dj = rows; dj >= -1; --dj) {
-        for (int di = -side; di <= side; ++di) {
+    vec2 f = px / cell - id;
+    float reachX = (1.15 * size + sway) / cell;
+    int di0 = int(ceil(f.x - 0.85 - reachX)), di1 = int(floor(f.x - 0.15 + reachX));
+    int dj0 = int(ceil(f.y - 0.85 - (0.3 * size + 2.0) / cell)), dj1 = int(floor(f.y - 0.15 + 2.1 * size / cell));
+    for (int dj = dj1; dj >= dj0; --dj) {
+        for (int di = di0; di <= di1; ++di) {
             if (acc.a > 0.995) continue;
             vec2 c = id + vec2(float(di), float(dj));
             if (job && c == chop.xy) continue;
