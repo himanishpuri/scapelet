@@ -13,7 +13,7 @@ CONTAINER ?= podman
 CHOWN   := $(if $(filter docker,$(notdir $(CONTAINER))),&& chown -R $(shell id -u):$(shell id -g) /src/dist,)
 DBUS    := qdbus-qt6 org.kde.plasmashell /PlasmaShell org.kde.PlasmaShell.evaluateScript
 
-.PHONY: all shaders install uninstall reload apply restore debug-on debug-off harness snapshot scenario stats gpu test lint dist clean srctar rpm
+.PHONY: all shaders install uninstall reload apply restore debug-on debug-off harness snapshot scenario stats gpu bench same test lint dist clean srctar rpm
 
 all: shaders
 
@@ -62,6 +62,14 @@ stats: shaders
 
 gpu:
 	sh tools/gpu-usage.sh
+
+# GPU time of one frame at full GPU speed, e.g. make bench SCALE=3 ARGS="--theme city --time 20"
+bench: shaders
+	sh tools/bench.sh $(or $(SCALE),3) $(ARGS)
+
+# Same picture as another checkout? e.g. make same REF=/tmp/scapelet-ref ARGS="--theme city --time 20"
+same: shaders
+	sh tools/same.sh $(REF) $(ARGS)
 
 test:
 	QT_QPA_PLATFORM=offscreen qmltestrunner-qt6 -input tests/unit

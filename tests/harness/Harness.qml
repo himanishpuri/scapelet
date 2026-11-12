@@ -11,6 +11,7 @@ import "../../package/contents/code/themes.js" as Themes
 //   qml-qt6 tests/harness/Harness.qml [-- --snapshot /abs/path.png | --export /abs/path.png] [--maximized] [--paused]
 //       [--theme <id>] [--settings '<json>'] [--hour <0..24>] [--time <s>] [--script events] [--stats]
 //       [--tap <x>,<y>]   (a click there at start-up; a snapshot is then taken 600 ms later)
+//       [--fps <n>] [--scale <n>]   (--scale: the engine's renderScale; above 1 it draws more pixels, for tools/bench.sh)
 // Keys: A add icon, D remove last icon, Space toggle animation, T next theme,
 //       W toggle a fake widget, H cycle the hour (wall clock, 6, 12, 19, 0), P next palette.
 Window {
@@ -124,6 +125,7 @@ Window {
         themeSettingsJson: win.arg("--settings", "{}")
         hourOverride: Number(win.arg("--hour", "-1"))
         fps: Number(win.arg("--fps", "30"))
+        renderScale: Number(win.arg("--scale", "1"))
 
         // A click on the harness window stands in for a click on the empty desktop.
         TapHandler {

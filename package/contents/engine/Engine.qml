@@ -16,7 +16,7 @@ Item {
     property bool dragging: false         // an icon drag is in progress
     property bool running: true
     property int fps: 30
-    property real renderScale: 1.0        // 0.5..1.0
+    property real renderScale: 1.0        // 0.5..1.0; above 1 draws more pixels than the screen has (benchmarks)
     property real influenceRadius: 70     // px
     property int appearDelay: 2000        // ms
     property int disappearDelay: 3000     // ms
@@ -175,7 +175,7 @@ Item {
     Loader {
         id: themeLoader
         anchors.fill: parent
-        layer.enabled: engine.renderScale < 0.999
+        layer.enabled: Math.abs(engine.renderScale - 1) > 0.001
         layer.smooth: true
         layer.textureSize: Qt.size(Math.max(1, Math.ceil(width * engine.renderScale)), Math.max(1, Math.ceil(height * engine.renderScale)))
         onLoaded: item.settings = Qt.binding(() => engine.themeSettings)
