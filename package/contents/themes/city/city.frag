@@ -14,6 +14,11 @@ layout(std140, binding = 0) uniform buf {
     float lit;        // 0..1, share of windows with a light on
     float smoke;      // 1: chimneys smoke, 0: they do not
     float windmills;  // 1: a few windmills stand among the houses, 0: trees stand in their place
+    // Only sails, flags and smoke move. pass 0 draws the whole town for time 0 and writes alpha 0
+    // where one of them can ever be, alpha 1 elsewhere: the still picture, kept in `still`.
+    // pass 1 draws a frame: it copies the pixels the still picture marks 1 and draws the others anew.
+    // pass 2 draws a frame without the still picture: every pixel anew.
+    float pass;
     vec2 resolution;  // px, item size
     vec4 tint;        // light colour, multiplies the result
     vec4 cPaveLight;  // the sand of the square
@@ -40,6 +45,7 @@ layout(std140, binding = 0) uniform buf {
 };
 layout(binding = 1) uniform sampler2D mask;     // r = narrow sum: > 0 near an icon
 layout(binding = 2) uniform sampler2D noiseTex; // r, g: 2-octave noise, b: 1 octave; tile = 2048 px, repeats
+layout(binding = 3) uniform sampler2D still;    // pass 1: the picture of pass 0, same pixels as this one
 
 const float E0 = 0.0183156;   // exp(-4): the field blobs' floor, see shaders/field.frag
 const float DEPTH = 0.8;      // depth of a lot in cells
@@ -210,6 +216,14 @@ void main() {
     // another result on the screen than in a texture, and it needs lv in all four pixels of
     // the block, also in one that is not drawn anew.
     vec2 unit = abs(vec2(dFdx(px.x), dFdy(px.y)));        // px per drawn pixel
+    if (pass > 0.5 && pass < 1.5) {
+        vec4 kept = texture(still, qt_TexCoord0);
+        if (kept.a > 0.5) {
+            fragColor = vec4(kept.rgb, 1.0) * qt_Opacity;
+            return;
+        }
+    }
+    float moves = 0.0;         // 1: something that moves can cover this pixel
     float lv = level(px);
     vec2 p0 = px - mod(floor(px / unit), 2.0) * unit;     // the block's pixel nearest the top left
     float l01 = level(p0 + vec2(0.0, unit.y));
@@ -386,6 +400,9 @@ void main() {
                 if (abs(sp.y) > abs(sp.x)) sp = vec2(sp.y, -sp.x);
                 if (sp.x < 0.0) sp = -sp;
                 float reach = 0.62 * cell;
+                // The sails stay within reach + 0.01 of the hub, and nothing is drawn further than
+                // 0.5 / s from an outline (see a below): beyond both, no sail ever shows.
+                if (length(hub) < reach + 1.0 + 0.5 / s) moves = 1.0;
                 float dSpar = box(sp, vec2(0.5 * reach, 0.0), vec2(0.5 * reach, 0.7));
                 float dSail = box(sp, vec2(0.6 * reach, 2.6), vec2(0.36 * reach, 2.2));
                 float dSails = min(dSpar, dSail);
@@ -462,6 +479,9 @@ void main() {
                     // A flag that waves (3 rad/s).
                     float wave = 0.8 * sin(time * 3.0 + 0.9 * tq.x + 6.2832 * h.y) * step(0.5, tq.x);
                     float dFlag = box(vec2(tq.x, tq.y + wave), vec2(3.6, 10.0), vec2(3.2, 2.2));
+                    // The wave lifts the cloth by at most 0.8: where the resting flag is further
+                    // than that plus the 0.5 / s a shape is drawn beyond its outline, it never shows.
+                    if (box(tq, vec2(3.6, 10.0), vec2(3.2, 2.2)) < 0.9 + 0.5 / s) moves = 1.0;
                     dTop = min(box(tq, vec2(0.0, 6.2), vec2(0.5, 6.2)), dFlag);
                     if (dFlag < 0.0) topC = trim;
                 } else if (topper < 0.52) {
@@ -648,6 +668,16 @@ void main() {
                 float cTop = stackSmoke ? D.y + D.z : D.y + (kind > 0.5 ? D.z : 0.5 * D.z) + 7.0;
                 vec2 mouth = root + vec2((h.x < 0.5 ? -0.5 : 0.5) * (stackSmoke ? 1.1 : 1.0) * D.x, -cTop);
                 float big = stackSmoke ? 1.7 : 1.0;
+                if (pass < 0.5) {
+                    // Where a puff can ever be: the puff at 24 moments of its rise, each drawn
+                    // larger by what it moves and grows until halfway to the next moment
+                    // (centre at most 83.1 * big, radius 8 * big per unit of p; half a step is 1 / 48).
+                    for (int n = 0; n < 24; ++n) {
+                        float p = (float(n) + 0.5) / 24.0;
+                        vec2 at = mouth + big * vec2(24.0 * p * p + 2.5 * sin(p * 9.0 + 6.2832 * h.x), -4.0 - 44.0 * p);
+                        if (length(px - at) < big * (3.5 + 8.0 * p + 1.9) + 0.5) moves = 1.0;
+                    }
+                }
                 for (int i = 0; i < 3; ++i) {
                     float p = fract(time * 300.0 / 3769.911184 + float(i) / 3.0 + h.y);
                     vec2 at = mouth + big * vec2(24.0 * p * p + 2.5 * sin(p * 9.0 + 6.2832 * h.x), -4.0 - 44.0 * p);
@@ -665,5 +695,5 @@ void main() {
 
     outc += (hash(floor(px)) - 0.5) * 0.012;
     outc *= tint.rgb;
-    fragColor = vec4(outc, 1.0) * qt_Opacity;
+    fragColor = vec4(outc, pass > 0.5 ? 1.0 : 1.0 - moves) * qt_Opacity;
 }

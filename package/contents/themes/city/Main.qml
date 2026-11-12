@@ -18,12 +18,16 @@ ThemeBase {
     readonly property bool showPigeons: theme.settings.pigeons ?? true
     accentColor: pal.accent
 
-    ShaderEffect {
-        anchors.fill: parent
+    // The town's shader. Only sails, flags and smoke move, so it is used twice: once to draw the
+    // whole town and mark where those can be (the still picture), and once for the frames, which
+    // copy the still picture and draw only the marked pixels anew.
+    component Town: ShaderEffect {
         blending: false
         property var mask: theme.env.field
         property var noiseTex: theme.env.noise
-        property real time: theme.env.time
+        property real time: 0
+        property real pass: 0
+        property var still: theme.env.noise     // pass 0 does not read it, but a sampler needs a texture
         property real cell: 48
         property real keep: 0.46 + 0.06 * (theme.settings.density ?? 8)
         property real lit: theme.pal.lit
@@ -53,6 +57,32 @@ ThemeBase {
         property color cTrunk: theme.pal.trunk
         property color cSmoke: theme.pal.smoke
         fragmentShader: Qt.resolvedUrl("city.frag.qsb")
+    }
+
+    // The still picture is used when a screen pixel is a whole number of drawn pixels (always, unless
+    // the user lowered the render scale). At other scales pixel centres fall exactly on edges of the
+    // drawn patterns, where the smallest rounding difference decides a pixel, so a copy is not known
+    // to match what the frame would draw there. The town is then drawn whole on every frame.
+    readonly property bool keepStill: Math.abs(theme.env.renderScale - Math.round(theme.env.renderScale)) < 0.001
+
+    // Drawn again only when the squares, a setting or the size change.
+    Town {
+        id: stillTown
+        anchors.fill: parent
+        visible: theme.keepStill
+    }
+
+    StillCache {
+        id: kept
+        env: theme.env
+        sourceItem: theme.keepStill ? stillTown : null
+    }
+
+    Town {
+        anchors.fill: parent
+        pass: theme.keepStill ? 1 : 2
+        still: kept
+        time: theme.env.time
         // Cached while the pigeons fly: frames between engine ticks then cost a texture copy, not the shader.
         layer.enabled: clock.running
     }
