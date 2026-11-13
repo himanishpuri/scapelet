@@ -59,7 +59,19 @@ More themes can be added without touching the engine.
 ## Install
 
 You need KDE Plasma 6.3 or newer and the default "Folder View" desktop (the one
-that shows icons). To build it, you also need `make` and Qt Shader Tools:
+that shows icons).
+
+### From the KDE Store
+
+Right-click the desktop, choose **Desktop and Wallpaper**, click
+**Get New Plugins…**, search for **Scapelet** and click **Install**. Then pick
+**Scapelet** as the **Wallpaper type**.
+
+Scapelet is also on the [KDE Store website](https://store.kde.org/p/2381731/).
+
+### From source
+
+To build it, you also need `make` and Qt Shader Tools:
 
 ```sh
 sudo dnf install make qt6-qtshadertools     # Fedora
