@@ -4,12 +4,14 @@
         "Authors": [
             { "Name": "himanishpuri", "Email": "himanishpuri2203@gmail.com" }
         ],
+        "BugReportUrl": "https://github.com/himanishpuri/scapelet/issues",
         "Description": "A living landscape that grows around your desktop icons",
         "Icon": "preferences-desktop-wallpaper",
         "Id": "io.github.himanishpuri.scapelet",
         "License": "GPL-3.0-or-later",
         "Name": "Scapelet",
-        "Version": "0.6.1"
+        "Version": "0.6.1",
+        "Website": "https://github.com/himanishpuri/scapelet"
     },
     "X-Plasma-API-Minimum-Version": "6.3"
 }
